@@ -5,7 +5,7 @@ public class PlayerMovement : MonoBehaviour
 {
     private float _maxSpeed = 5.0f;
     private float _maxAcceleration = 7.0f;
-    private Rect _floorRect = new(-25.0f, -25.0f, 50.0f, 50.0f);
+    private Rect _floorRect = new(-24.5f, -24.5f, 49.0f, 49.0f);
     private Vector2 _input;
     private Vector3 _velocity;
 
