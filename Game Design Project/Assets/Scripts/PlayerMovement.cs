@@ -3,6 +3,9 @@ using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
+    [SerializeField]
+    private Transform _cameraTransform;
+
     private float _maxSpeed = 5.0f;
     private float _maxAcceleration = 7.0f;
     private Rect _floorRect = new(-24.5f, -24.5f, 49.0f, 49.0f);
@@ -20,9 +23,10 @@ public class PlayerMovement : MonoBehaviour
             _maxSpeed /= 2.0f;
     }
 
-    private void Update()
+    void Update()
     {
         var desiredVelocity = new Vector3(_input.x, 0.0f, _input.y) * _maxSpeed;
+        desiredVelocity = _cameraTransform.rotation * desiredVelocity;
         var maxSpeedChange = _maxAcceleration * Time.deltaTime;
 
         _velocity.x = Mathf.MoveTowards(_velocity.x, desiredVelocity.x, maxSpeedChange);
