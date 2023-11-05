@@ -15,6 +15,17 @@ public class CameraMovement : MonoBehaviour
         _mouseY = mouseCoords.y;
     }
 
+    public void Switch(InputAction.CallbackContext context)
+    {
+        if (context.started)
+        {
+            if (view == View.FIRST_PERSON)
+                view = View.THIRD_PERSON;
+            else
+                view = View.FIRST_PERSON;
+        }
+    }
+
     [SerializeField]
     private View view = View.THIRD_PERSON;
 
@@ -25,7 +36,7 @@ public class CameraMovement : MonoBehaviour
     private Transform firstPersonCameraTransform;
 
     [SerializeField]
-    private float sensitivity = 40.0f;
+    private float _sensitivity = 40.0f;
 
     [SerializeField]
     private float _distance = 7.0f; // Adjust the distance to your preference
@@ -45,14 +56,6 @@ public class CameraMovement : MonoBehaviour
     {
         if (_waitingTimeBeforeRotationCamera > 0f)
             _waitingTimeBeforeRotationCamera -= Time.deltaTime;
-
-        if (Input.GetKeyDown(KeyCode.V))
-        {
-            if (view == View.FIRST_PERSON)
-                view = View.THIRD_PERSON;
-            else
-                view = View.FIRST_PERSON;
-        }
     }
 
     void LateUpdate()
@@ -72,8 +75,9 @@ public class CameraMovement : MonoBehaviour
 
     void LateUpdateThirdPerson()
     {
-        _currentRotationY += _mouseX * sensitivity * Time.deltaTime;
-        _currentRotationX -= _mouseY * sensitivity * Time.deltaTime;
+        // Calculate the current rotation based on the mouse input
+        _currentRotationY += _mouseX * _sensitivity * Time.deltaTime;
+        _currentRotationX -= _mouseY * _sensitivity * Time.deltaTime;
 
         // Limit the vertical rotation to keep the camera from flipping
         _currentRotationX = Mathf.Clamp(_currentRotationX, 180f, 260f);
@@ -92,11 +96,14 @@ public class CameraMovement : MonoBehaviour
 
     void LateUpdateFirstPerson()
     {
+        // Make the camera follow the first person camera
         transform.position = firstPersonCameraTransform.position;
 
-        _currentRotationY = _mouseX * sensitivity * Time.deltaTime;
-        _currentRotationX = _mouseY * sensitivity * Time.deltaTime;
+        // Calculate the current rotation based on the mouse input
+        _currentRotationY = _mouseX * _sensitivity * Time.deltaTime;
+        _currentRotationX = _mouseY * _sensitivity * Time.deltaTime;
 
+        // Limit the vertical rotation to keep the camera from flipping
         var prevRotationX = transform.rotation.eulerAngles.x;
         var nextRotationX = transform.rotation.eulerAngles.x - _currentRotationX;
 
@@ -105,13 +112,12 @@ public class CameraMovement : MonoBehaviour
         else if (prevRotationX >= 270f && nextRotationX < 270f)
             nextRotationX = 270f;
 
+        // Set the new rotation and apply it to the camera transform
         Quaternion nextRotation = Quaternion.Euler(
             nextRotationX,
             transform.rotation.eulerAngles.y + _currentRotationY,
             0
         );
-
         transform.rotation = nextRotation;
-
     }
 }
