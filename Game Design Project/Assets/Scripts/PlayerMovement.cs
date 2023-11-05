@@ -25,8 +25,9 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
+        var cameraRotation = Quaternion.Euler(0.0f, _cameraTransform.rotation.eulerAngles.y, 0.0f);
         var desiredVelocity = new Vector3(_input.x, 0.0f, _input.y) * _maxSpeed;
-        desiredVelocity = _cameraTransform.rotation * desiredVelocity;
+        desiredVelocity = cameraRotation * desiredVelocity;
         var maxSpeedChange = _maxAcceleration * Time.deltaTime;
 
         _velocity.x = Mathf.MoveTowards(_velocity.x, desiredVelocity.x, maxSpeedChange);

@@ -25,7 +25,7 @@ public class CameraMovement : MonoBehaviour
     private Transform firstPersonCameraTransform;
 
     [SerializeField]
-    private float sensitivity = 30.0f;
+    private float sensitivity = 40.0f;
 
     [SerializeField]
     private float _distance = 7.0f; // Adjust the distance to your preference
@@ -73,10 +73,10 @@ public class CameraMovement : MonoBehaviour
     void LateUpdateThirdPerson()
     {
         _currentRotationY += _mouseX * sensitivity * Time.deltaTime;
-        _currentRotationX += _mouseY * sensitivity * Time.deltaTime;
+        _currentRotationX -= _mouseY * sensitivity * Time.deltaTime;
 
         // Limit the vertical rotation to keep the camera from flipping
-        _currentRotationX = Mathf.Clamp(_currentRotationX, 90f, 180f);
+        _currentRotationX = Mathf.Clamp(_currentRotationX, 180f, 260f);
 
         // Calculate the new camera position based on the current rotation
         Vector3 offset = new Vector3(0, 0, -_distance);

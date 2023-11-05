@@ -501,7 +501,7 @@ GameObject:
   - component: {fileID: 963194230}
   - component: {fileID: 963194231}
   m_Layer: 0
-  m_Name: 3rd Person Camera
+  m_Name: Third Person Camera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -640,7 +640,7 @@ MonoBehaviour:
   view: 1
   player: {fileID: 971832546}
   firstPersonCameraTransform: {fileID: 165213776}
-  sensitivity: 30
+  sensitivity: 40
   _distance: -7
 --- !u!114 &963194231
 MonoBehaviour:
@@ -810,7 +810,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3c7e87c7e3e1d34ebe58378c65f8838, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cameraTransform: {fileID: 963194228}
+  _cameraTransform: {fileID: 963194228}
 --- !u!114 &971832552
 MonoBehaviour:
   m_ObjectHideFlags: 0
