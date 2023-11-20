@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using Unity.Collections;
 using Unity.VisualScripting;
 using UnityEditor.Search;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public enum TopographyMode { FLAT, RELIEF }
 public enum DrawNoiseMode { HEIGHT };
@@ -16,7 +18,7 @@ public class MapGenerator : MonoBehaviour {
 
     [Header("Map Settings")]
     [SerializeField, ReadOnly] private int mapChunkSize;
-    [SerializeField][Range(0, 10)] public int distanceViewChunksForEditor;
+    [SerializeField][Range(0, 10)] public int editorDistanceViewChunks;
 
     [Header("Map Data")]
     [SerializeField] private NoiseData heightData;
@@ -36,7 +38,23 @@ public class MapGenerator : MonoBehaviour {
     private int terrainBaseTextureResolution;
 
     Queue<Tuple<Terrain, int, int>> queue = new Queue<Tuple<Terrain, int, int>>();
+    Queue <TerrainDataThread> queueChunksThread = new Queue<TerrainDataThread>();
     Dictionary<Vector2Int, bool> terrainChunkWasGenerated = new Dictionary<Vector2Int, bool>();
+
+    public void Initialize() {
+        ClearData();
+        DefaultData();
+    }
+
+    void Update() {
+        while (queueChunksThread.Count > 0) {
+            TerrainDataThread terrainDataThread;
+            lock (queueChunksThread) {
+                terrainDataThread = queueChunksThread.Dequeue();
+            }
+            terrainDataThread.callback(terrainDataThread.mapData);
+        }
+    }
 
     // ----------------- DRAW MODES -----------------
 
@@ -47,29 +65,34 @@ public class MapGenerator : MonoBehaviour {
     }
 
     private void DrawVisibleChunks() {
-        queue.Enqueue(new Tuple<Terrain, int, int>(GenerateNewTerrainChunk(null, Vector2Int.zero, -1), 0, 0));
+        Terrain terrain = GenerateNewTerrainChunk();
+        SetDefaultSettingsTerrainChunk(terrain, null, Vector2Int.zero, -1);
+
+        queue.Enqueue(new Tuple<Terrain, int, int>(terrain, 0, 0));
         terrainChunkWasGenerated.Add(Vector2Int.zero, true);
         while (queue.Count > 0) {
-            Terrain terrain = queue.Peek().Item1;
+            Terrain parentTerrain = queue.Peek().Item1;
             Vector2Int position = new Vector2Int(queue.Peek().Item2, queue.Peek().Item3);
 
-            MapData mapData = GenerateMapData(new Vector2(position.y * (mapChunkSize - 1), -position.x * (mapChunkSize - 1)));
-            DrawTerrain(terrain, mapData);
+            MapData mapData = GenerateMapData(new Vector2(position.x, position.y));
+            DrawTerrain(parentTerrain, mapData);
 
             queue.Dequeue();
 
             for (int dir = 0; dir < 4; dir++) {
                 Vector2Int offset = position + Direction.GetOffset(dir);
                 int distance = Mathf.Abs(offset.x) + Mathf.Abs(offset.y);
-                if (distance <= distanceViewChunksForEditor && !terrainChunkWasGenerated.ContainsKey(offset)) {
+                if (distance <= editorDistanceViewChunks && !terrainChunkWasGenerated.ContainsKey(offset)) {
                     terrainChunkWasGenerated.Add(offset, true);
-                    queue.Enqueue(new Tuple<Terrain, int, int>(GenerateNewTerrainChunk(terrain, offset, dir), offset.x, offset.y));
+                    terrain = GenerateNewTerrainChunk();
+                    SetDefaultSettingsTerrainChunk(terrain, parentTerrain, offset, dir);
+                    queue.Enqueue(new Tuple<Terrain, int, int>(terrain, offset.x, offset.y));
                 }
             }
         }
     }
 
-    private void DrawTerrain(Terrain terrain, MapData mapData) {
+    public void DrawTerrain(Terrain terrain, MapData mapData) {
         switch (topographyMode) {
             case TopographyMode.RELIEF:
                 DrawMesh(terrain, mapData);
@@ -96,48 +119,50 @@ public class MapGenerator : MonoBehaviour {
     // ----------------- MAP GENERATION -----------------
 
     public MapData GenerateMapData(Vector2 centre) {
+        centre = new Vector2(centre.y * (mapChunkSize - 1), -centre.x * (mapChunkSize - 1));
+
         float[,] baseMap = Noise.GenerateNoiseMap(mapChunkSize + 2, mapChunkSize + 2, centre, heightData);
 
         return new MapData(baseMap, null, null, null, null);
     }
 
-    public Terrain GenerateNewTerrainChunk(Terrain parentTerrain, Vector2Int offset, int direction) {
-        Terrain newTerrainChunk = Instantiate(terrainPrefab, transform).GetComponent<Terrain>();
+    public Terrain GenerateNewTerrainChunk() {
+        return Instantiate(terrainPrefab, transform).GetComponent<Terrain>();
+    }
 
-        newTerrainChunk.gameObject.name = "Terrain(" + offset.x + "," + offset.y + ")";
-        newTerrainChunk.transform.parent = transform;
-        newTerrainChunk.transform.position = new Vector3(offset.x * terrainChunkSize, 0, offset.y * terrainChunkSize);
+    public void SetDefaultSettingsTerrainChunk(Terrain terrain, Terrain parentTerrain, Vector2Int offset, int direction) {
+        terrain.gameObject.name = "Terrain(" + offset.x + "," + offset.y + ")";
+        terrain.transform.parent = transform;
+        terrain.transform.position = new Vector3(offset.x * terrainChunkSize, 0, offset.y * terrainChunkSize);
 
-        newTerrainChunk.terrainData = new TerrainData();
-        newTerrainChunk.terrainData.heightmapResolution = mapChunkSize;
-        newTerrainChunk.terrainData.size = new Vector3(terrainChunkSize, terrainChunkHeight, terrainChunkSize);
-        newTerrainChunk.terrainData.SetDetailResolution(terrainDetailResolution, terrainDetailResolutionPerPatch);
-        newTerrainChunk.terrainData.alphamapResolution = terrainControlTextureResolution;
-        newTerrainChunk.terrainData.baseMapResolution = terrainBaseTextureResolution;
+        terrain.terrainData = new TerrainData();
+        terrain.terrainData.heightmapResolution = mapChunkSize;
+        terrain.terrainData.size = new Vector3(terrainChunkSize, terrainChunkHeight, terrainChunkSize);
+        terrain.terrainData.SetDetailResolution(terrainDetailResolution, terrainDetailResolutionPerPatch);
+        terrain.terrainData.alphamapResolution = terrainControlTextureResolution;
+        terrain.terrainData.baseMapResolution = terrainBaseTextureResolution;
         foreach (TerrainLayersGroup terrainLayers in terrainLayersGroup) {
             if (terrainLayers.drawNoiseMode == drawNoiseMode) {
-                newTerrainChunk.terrainData.terrainLayers = terrainLayers.layers.ToArray();
+                terrain.terrainData.terrainLayers = terrainLayers.layers.ToArray();
                 break;
             }
         }
 
-        newTerrainChunk.GetComponent<TerrainCollider>().terrainData = newTerrainChunk.terrainData;
+        terrain.GetComponent<TerrainCollider>().terrainData = terrain.terrainData;
 
-        newTerrainChunk.materialTemplate = new Material(terrainMaterial);
+        terrain.materialTemplate = new Material(terrainMaterial);
 
         if (parentTerrain != null) {
             if (direction == Direction.NORTH) {
-                parentTerrain.SetNeighbors(null, newTerrainChunk, null, null);
+                parentTerrain.SetNeighbors(null, terrain, null, null);
             } else if (direction == Direction.EAST) {
-                parentTerrain.SetNeighbors(null, null, newTerrainChunk, null);
+                parentTerrain.SetNeighbors(null, null, terrain, null);
             } else if (direction == Direction.SOUTH) {
-                parentTerrain.SetNeighbors(null, null, null, newTerrainChunk);
+                parentTerrain.SetNeighbors(null, null, null, terrain);
             } else if (direction == Direction.WEST) {
-                parentTerrain.SetNeighbors(newTerrainChunk, null, null, null);
+                parentTerrain.SetNeighbors(terrain, null, null, null);
             }
         }
-
-        return newTerrainChunk;
     }
 
     private float[,,] GenerateSplatsMap(TerrainData terrainData, float[,] heightMap) {
@@ -178,6 +203,24 @@ public class MapGenerator : MonoBehaviour {
         return splatmapData;
     }
 
+    // ----------------- THREADS -----------------
+
+    public void RequestChunk(Terrain terrain, Terrain parentTerrain, Vector2Int positionChunk, int dir, Action<MapData> callback) {
+        ThreadStart threadStart = delegate {
+            GenerateChunkThread(positionChunk, callback);
+        };
+
+        new Thread(threadStart).Start();
+    }
+
+    private void GenerateChunkThread(Vector2Int positionChunk, Action<MapData> callback) {
+        MapData mapData = GenerateMapData(new Vector2(positionChunk.x, positionChunk.y));
+
+        lock (queueChunksThread) {
+            queueChunksThread.Enqueue(new TerrainDataThread(mapData, callback));
+        }
+    }
+
     // ----------------- TRANSFORM -----------------
 
     private float[,] TransformMatrixIntoMinusTwo(float[,] matrix) {
@@ -198,6 +241,10 @@ public class MapGenerator : MonoBehaviour {
 
     public bool GetAutoUpdate() {
         return autoUpdate;
+    }
+
+    public int GetMapChunkSize() {
+        return mapChunkSize;
     }
 
     // ----------------- DEFAULT DATA -----------------
@@ -262,4 +309,15 @@ public struct TerrainLayersGroup {
     public string _name;
     public List <TerrainLayer> layers;
     public DrawNoiseMode drawNoiseMode;
+}
+
+[Serializable]
+public struct TerrainDataThread {
+    public MapData mapData;
+    public Action<MapData> callback;
+
+    public TerrainDataThread(MapData mapData, Action<MapData> callback) {
+        this.mapData = mapData;
+        this.callback = callback;
+    }
 }

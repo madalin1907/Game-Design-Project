@@ -16,6 +16,10 @@ public class MapGeneratorEditor : Editor {
         if (GUILayout.Button("Generate")) {
             mapGen.DrawMapInEditor();
         }
+
+        if (GUILayout.Button("Clear")) {
+            mapGen.ClearData();
+        }
     }
 
 }
