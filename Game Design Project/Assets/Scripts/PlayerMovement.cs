@@ -6,9 +6,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]
     private Transform _cameraTransform;
 
-    private float _maxSpeed = 5.0f;
+    private float _maxSpeed = 10.0f;
     private float _maxAcceleration = 7.0f;
-    private Rect _floorRect = new(-24.5f, -24.5f, 49.0f, 49.0f);
     private Vector2 _input;
     private Vector3 _velocity;
 
@@ -34,18 +33,6 @@ public class PlayerMovement : MonoBehaviour
         _velocity.z = Mathf.MoveTowards(_velocity.z, desiredVelocity.z, maxSpeedChange);
 
         var newPosition = transform.position + _velocity * Time.deltaTime;
-
-        if (newPosition.x > _floorRect.xMax)
-            newPosition.x = _floorRect.xMax;
-
-        if (newPosition.x < _floorRect.xMin)
-            newPosition.x = _floorRect.xMin;
-
-        if (newPosition.z > _floorRect.yMax)
-            newPosition.z = _floorRect.yMax;
-
-        if (newPosition.z < _floorRect.yMin)
-            newPosition.z = _floorRect.yMin;
 
         transform.position = newPosition;
     }
