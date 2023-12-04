@@ -117,6 +117,10 @@ public class MapGenerator : MonoBehaviour {
             case DrawNoiseMode.HEIGHT:
                 DrawHeightMap(terrain, mapData);
                 break;
+
+            case DrawNoiseMode.LEVEL:
+                DrawControlMap(terrain, mapData);
+                break;
         }
     }
 
@@ -126,6 +130,30 @@ public class MapGenerator : MonoBehaviour {
             mapData.heightMap,
             terrainBaseTextureResolution,
             terrainSmoothingEdge
+        );
+
+        terrain.terrainData.SetAlphamaps(0, 0, splatsMap);
+    }
+
+    private void DrawControlMap(Terrain terrain, MapData mapData) {
+        int[,] levelMap = new int[mapData.heightMap.GetLength(0), mapData.heightMap.GetLength(1)];
+        for (int y = 0; y < mapData.heightMap.GetLength(0); y++) {
+            for (int x = 0; x < mapData.heightMap.GetLength(1); x++) {
+                float height = mapData.heightMap[y, x];
+                if (height < oceanMaxHeight) {
+                    levelMap[y, x] = 0;
+                } else if (height < oceanMaxHeight + plainMaxHeight) {
+                    levelMap[y, x] = 1;
+                } else {
+                    levelMap[y, x] = 2;
+                }
+            }
+        }
+
+        float[,,] splatsMap = MapGenerateUtils.GenerateSplatsMapForControl(
+            terrain.terrainData,
+            levelMap,
+            terrainBaseTextureResolution
         );
 
         terrain.terrainData.SetAlphamaps(0, 0, splatsMap);
@@ -184,6 +212,8 @@ public class MapGenerator : MonoBehaviour {
 
         return heightMap;
     }
+
+
 
     public Terrain GenerateNewTerrainChunk() {
         return Instantiate(terrainPrefab, transform).GetComponent<Terrain>();

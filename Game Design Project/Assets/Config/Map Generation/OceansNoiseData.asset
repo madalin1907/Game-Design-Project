@@ -18,7 +18,7 @@ MonoBehaviour:
   noiseScale: 10
   octaves: 4
   persistance: 0.5
-  lacunarity: 2
+  lacunarity: 1.6
   amplitude: 0.7
   frequency: 1
   minLevel: 0
