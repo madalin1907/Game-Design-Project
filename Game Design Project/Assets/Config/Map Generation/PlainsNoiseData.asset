@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 847de71b89ea1a74b937f8c641d36158, type: 3}
-  m_Name: HeightNoiseData
+  m_Name: PlainsNoiseData
   m_EditorClassIdentifier: 
   autoUpdate: 1
-  name: Height
+  name: Plains
   normalizeMode: 1
-  noiseScale: 100
+  noiseScale: 25
   octaves: 4
-  persistance: 0.5
-  lacunarity: 1
-  amplitude: 0.8
-  frequency: 0.75
+  persistance: 0.75
+  lacunarity: 1.5
+  amplitude: 0.7
+  frequency: 1
   minLevel: 0
-  seed: 128
+  seed: 32
   offset: {x: 0, y: 0}

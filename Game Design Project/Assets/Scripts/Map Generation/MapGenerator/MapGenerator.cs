@@ -8,7 +8,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 
 public enum TopographyMode { FLAT, RELIEF }
-public enum DrawNoiseMode { HEIGHT };
+public enum DrawNoiseMode { HEIGHT, LEVEL };
 
 public class MapGenerator : MonoBehaviour {
 
@@ -19,9 +19,21 @@ public class MapGenerator : MonoBehaviour {
     [Header("Map Settings")]
     [SerializeField, ReadOnly] private int mapChunkSize;
     [SerializeField][Range(0, 10)] public int editorDistanceViewChunks;
+    [SerializeField] private float oceanNoiseLevel;
+    [SerializeField] private float mountainNoiseLevel;
+    [SerializeField] private float oceanMaxHeight;
+    [SerializeField] private float plainMaxHeight;
+    [SerializeField] private float mountainMaxHeight;
+    [SerializeField] private AnimationCurve oceanSmoothestCurveHeight;
+    [SerializeField] private AnimationCurve oceanCurveHeight;
+    [SerializeField] private AnimationCurve plainsCurveHeight;
+    [SerializeField] private AnimationCurve plainsSmoothestCurveHeight;
 
     [Header("Map Data")]
     [SerializeField] private NoiseData heightData;
+    [SerializeField] private NoiseData oceansData;
+    [SerializeField] private NoiseData plainsData;
+    [SerializeField] private NoiseData mountainsData;
 
     [Header("Terrain")]
     [SerializeField] private GameObject terrainPrefab;
@@ -109,11 +121,18 @@ public class MapGenerator : MonoBehaviour {
     }
 
     private void DrawHeightMap(Terrain terrain, MapData mapData) {
-        terrain.terrainData.SetAlphamaps(0, 0, GenerateSplatsMap(terrain.terrainData, mapData.heightMap));
+        float[,,] splatsMap = MapGenerateUtils.GenerateSplatsMapForHeight(
+            terrain.terrainData,
+            mapData.heightMap,
+            terrainBaseTextureResolution,
+            terrainSmoothingEdge
+        );
+
+        terrain.terrainData.SetAlphamaps(0, 0, splatsMap);
     }
 
     private void DrawMesh(Terrain terrain, MapData mapData) {
-        terrain.terrainData.SetHeights(0, 0, TransformMatrixIntoMinusTwo(mapData.heightMap));
+        terrain.terrainData.SetHeights(0, 0, mapData.heightMap);
     }
 
     // ----------------- MAP GENERATION -----------------
@@ -121,9 +140,49 @@ public class MapGenerator : MonoBehaviour {
     public MapData GenerateMapData(Vector2 centre) {
         centre = new Vector2(centre.y * (mapChunkSize - 1), -centre.x * (mapChunkSize - 1));
 
-        float[,] baseMap = Noise.GenerateNoiseMap(mapChunkSize + 2, mapChunkSize + 2, centre, heightData);
+        float[,] heightMap = GenerateNoiseMap(centre);
 
-        return new MapData(baseMap, null, null, null, null);
+        return new MapData(heightMap, null, null, null, null);
+    }
+
+    float[,] GenerateNoiseMap(Vector2 centre) {
+        float[,] heightMap = new float[mapChunkSize, mapChunkSize];
+        float[,] heightLevelMap = Noise.GenerateNoiseMap(mapChunkSize, mapChunkSize, centre, heightData);
+
+        float[,] oceansMap = Noise.GenerateNoiseMap(mapChunkSize, mapChunkSize, centre, oceansData);
+        float[,] plainsMap = Noise.GenerateNoiseMap(mapChunkSize, mapChunkSize, centre, plainsData);
+        float[,] mountainsMap = Noise.GenerateNoiseMap(mapChunkSize, mapChunkSize, centre, mountainsData);
+
+        int height = heightLevelMap.GetLength(0);
+        int width = heightLevelMap.GetLength(1);
+
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                float heightValue = heightLevelMap[y, x];
+                if (heightValue < oceanNoiseLevel) {
+                    float stepToPlain = (heightValue / oceanNoiseLevel);
+                    float expectedHeight = oceanCurveHeight.Evaluate(stepToPlain) * oceanMaxHeight;
+                    float actualHeight = oceansMap[y, x] * oceanMaxHeight;
+                    float smoothest = oceanSmoothestCurveHeight.Evaluate(stepToPlain);
+
+                    heightMap[y, x] = smoothest * expectedHeight + (1f - smoothest) * actualHeight;
+                } else if (heightValue < mountainNoiseLevel) {
+                    float stepToMountain = (heightValue - oceanNoiseLevel) / (mountainNoiseLevel - oceanNoiseLevel);
+                    float expectedHeight = plainsCurveHeight.Evaluate(stepToMountain) * plainMaxHeight;
+                    float actualHeight = plainsMap[y, x] * plainMaxHeight;
+                    float smoothest = plainsSmoothestCurveHeight.Evaluate(stepToMountain);
+
+                    heightMap[y, x] = oceanMaxHeight + smoothest * expectedHeight + (1f - smoothest) * actualHeight;
+                } else {
+                    float stepToMountain = (heightValue - mountainNoiseLevel) / (1 - mountainNoiseLevel);
+                    float actualHeight = mountainsMap[y, x] * mountainMaxHeight;
+
+                    heightMap[y, x] = oceanMaxHeight + plainMaxHeight + stepToMountain * actualHeight;
+                }
+            }
+        }
+
+        return heightMap;
     }
 
     public Terrain GenerateNewTerrainChunk() {
@@ -163,44 +222,6 @@ public class MapGenerator : MonoBehaviour {
                 parentTerrain.SetNeighbors(terrain, null, null, null);
             }
         }
-    }
-
-    private float[,,] GenerateSplatsMap(TerrainData terrainData, float[,] heightMap) {
-        int layerCount = terrainData.terrainLayers.Length;
-        float[,,] splatmapData = new float[terrainBaseTextureResolution, terrainBaseTextureResolution, layerCount];
-
-        for (int y = 1; y < terrainBaseTextureResolution + 1; y++) {
-            for (int x = 1; x < terrainBaseTextureResolution + 1; x++) {
-                int numDivisions = 0;
-                float height = 0;
-
-                if (x == 0) {
-                    height = heightMap[y, x - 1];
-                    ++numDivisions;
-                } else if (x >= terrainBaseTextureResolution - terrainSmoothingEdge) {
-                    int distance = terrainBaseTextureResolution - x;
-                    height = heightMap[y, x + 1] * (1 - 1f * distance / terrainSmoothingEdge) + heightMap[y, x] * (1f * distance / terrainSmoothingEdge);
-                    ++numDivisions;
-                }
-
-                if (y == 0) {
-                    height += heightMap[y - 1, x];
-                } else if (y >= terrainBaseTextureResolution - terrainSmoothingEdge) {
-                    int distance = terrainBaseTextureResolution - y;
-                    height += heightMap[y + 1, x] * (1 - 1f * distance / terrainSmoothingEdge) + heightMap[y, x] * (1f * distance / terrainSmoothingEdge);
-                    ++numDivisions;
-                }
-
-                if (numDivisions > 0)
-                    height /= numDivisions;
-                else height = heightMap[y, x];
-
-                splatmapData[y - 1, x - 1, 0] = 1 - height;
-                splatmapData[y - 1, x - 1, 1] = height;
-            }
-        }
-
-        return splatmapData;
     }
 
     // ----------------- THREADS -----------------
