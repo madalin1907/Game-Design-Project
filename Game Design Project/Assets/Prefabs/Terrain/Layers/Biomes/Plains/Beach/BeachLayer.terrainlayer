@@ -7,15 +7,15 @@ TerrainLayer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: BeachLayer
-  m_DiffuseTexture: {fileID: 2800000, guid: 170e584ea7469a146b0c1fd2f08e2878, type: 3}
-  m_NormalMapTexture: {fileID: 2800000, guid: 60916817ffcf64e46b52588ad29cafa5, type: 3}
+  m_DiffuseTexture: {fileID: 2800000, guid: f82232c03bd232d49bb4aeae67cab7d1, type: 3}
+  m_NormalMapTexture: {fileID: 2800000, guid: 391dc853961512b48b928add1a53d4a7, type: 3}
   m_MaskMapTexture: {fileID: 0}
-  m_TileSize: {x: 5, y: 5}
+  m_TileSize: {x: 10, y: 10}
   m_TileOffset: {x: 0, y: 0}
   m_Specular: {r: 0, g: 0, b: 0, a: 0}
   m_Metallic: 0
   m_Smoothness: 0
-  m_NormalScale: 4
+  m_NormalScale: 2
   m_DiffuseRemapMin: {x: 0, y: 0, z: 0, w: 0}
   m_DiffuseRemapMax: {x: 1, y: 1, z: 1, w: 1}
   m_MaskMapRemapMin: {x: 0, y: 0, z: 0, w: 0}

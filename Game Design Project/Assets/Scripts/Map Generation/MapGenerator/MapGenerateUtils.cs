@@ -132,7 +132,7 @@ public static class MapGenerateUtils {
         float[,] heightMap
     ) {
 
-        float[,] heatMap = Noise.GenerateNoiseMap(mapChunkSize + 2, mapChunkSize + 2, centre, noiseData);
+        float[,] heatMap = Noise.GenerateNoiseMap(mapChunkSize, mapChunkSize, centre, noiseData);
 
         for (int y = 0; y < mapChunkSize; y++) {
             for (int x = 0; x < mapChunkSize; x++) {
@@ -154,7 +154,7 @@ public static class MapGenerateUtils {
     ) {
 
         AnimationCurve moistureHeightCurve = new AnimationCurve(_moistureHeightCurve.keys);
-        float[,] moistureNoise = Noise.GenerateNoiseMap(mapChunkSize + 2, mapChunkSize + 2, centre, noiseData);
+        float[,] moistureNoise = Noise.GenerateNoiseMap(mapChunkSize, mapChunkSize, centre, noiseData);
 
         for (int y = 0; y < mapChunkSize; y++) {
             for (int x = 0; x < mapChunkSize; x++) {

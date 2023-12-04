@@ -8,7 +8,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 
 public enum TopographyMode { FLAT, RELIEF }
-public enum DrawNoiseMode { HEIGHT, LEVEL };
+public enum DrawNoiseMode { HEIGHT, LEVEL, HEAT, MOISTURE, BIOME };
 
 public class MapGenerator : MonoBehaviour {
 
@@ -24,16 +24,20 @@ public class MapGenerator : MonoBehaviour {
     [SerializeField] private float oceanMaxHeight;
     [SerializeField] private float plainMaxHeight;
     [SerializeField] private float mountainMaxHeight;
-    [SerializeField] private AnimationCurve oceanSmoothestCurveHeight;
-    [SerializeField] private AnimationCurve oceanCurveHeight;
-    [SerializeField] private AnimationCurve plainsCurveHeight;
-    [SerializeField] private AnimationCurve plainsSmoothestCurveHeight;
+    [SerializeField] private AnimationCurve _oceanSmoothestCurveHeight;
+    [SerializeField] private AnimationCurve _oceanCurveHeight;
+    [SerializeField] private AnimationCurve _plainsCurveHeight;
+    [SerializeField] private AnimationCurve _plainsSmoothestCurveHeight;
+    [SerializeField] private AnimationCurve _moistureHeightCurve;
 
     [Header("Map Data")]
     [SerializeField] private NoiseData heightData;
     [SerializeField] private NoiseData oceansData;
     [SerializeField] private NoiseData plainsData;
     [SerializeField] private NoiseData mountainsData;
+    [SerializeField] private NoiseData heatData;
+    [SerializeField] private NoiseData moistureData;
+    [SerializeField] private BiomeData biomeData;
 
     [Header("Terrain")]
     [SerializeField] private GameObject terrainPrefab;
@@ -119,7 +123,19 @@ public class MapGenerator : MonoBehaviour {
                 break;
 
             case DrawNoiseMode.LEVEL:
-                DrawControlMap(terrain, mapData);
+                DrawLevelMap(terrain, mapData);
+                break;
+
+            case DrawNoiseMode.HEAT:
+                DrawHeatMap(terrain, mapData);
+                break;
+
+            case DrawNoiseMode.MOISTURE:
+                DrawMoistureMap(terrain, mapData);
+                break;
+
+            case DrawNoiseMode.BIOME:
+                DrawBiomeMap(terrain, mapData);
                 break;
         }
     }
@@ -135,7 +151,29 @@ public class MapGenerator : MonoBehaviour {
         terrain.terrainData.SetAlphamaps(0, 0, splatsMap);
     }
 
-    private void DrawControlMap(Terrain terrain, MapData mapData) {
+    private void DrawHeatMap (Terrain terrain, MapData mapData) {
+        float[,,] splatsMap = MapGenerateUtils.GenerateSplatsMapForHeight(
+            terrain.terrainData,
+            mapData.heatMap,
+            terrainBaseTextureResolution,
+            terrainSmoothingEdge
+        );
+
+        terrain.terrainData.SetAlphamaps(0, 0, splatsMap);
+    }
+
+    private void DrawMoistureMap (Terrain terrain, MapData mapData) {
+        float[,,] splatsMap = MapGenerateUtils.GenerateSplatsMapForHeight(
+            terrain.terrainData,
+            mapData.moistureMap,
+            terrainBaseTextureResolution,
+            terrainSmoothingEdge
+        );
+
+        terrain.terrainData.SetAlphamaps(0, 0, splatsMap);
+    }
+
+    private void DrawLevelMap(Terrain terrain, MapData mapData) {
         int[,] levelMap = new int[mapData.heightMap.GetLength(0), mapData.heightMap.GetLength(1)];
         for (int y = 0; y < mapData.heightMap.GetLength(0); y++) {
             for (int x = 0; x < mapData.heightMap.GetLength(1); x++) {
@@ -159,6 +197,16 @@ public class MapGenerator : MonoBehaviour {
         terrain.terrainData.SetAlphamaps(0, 0, splatsMap);
     }
 
+    private void DrawBiomeMap (Terrain terrain, MapData mapData) {
+        float[,,] splatsMap = MapGenerateUtils.GenerateSplatsMapForControl(
+            terrain.terrainData,
+            mapData.biomesMap,
+            terrainBaseTextureResolution
+        );
+
+        terrain.terrainData.SetAlphamaps(0, 0, splatsMap);
+    }
+
     private void DrawMesh(Terrain terrain, MapData mapData) {
         terrain.terrainData.SetHeights(0, 0, mapData.heightMap);
     }
@@ -169,8 +217,11 @@ public class MapGenerator : MonoBehaviour {
         centre = new Vector2(centre.y * (mapChunkSize - 1), -centre.x * (mapChunkSize - 1));
 
         float[,] heightMap = GenerateNoiseMap(centre);
+        float[,] heatMap = MapGenerateUtils.CreateHeatNoise(mapChunkSize, centre, heatData, heightMap);
+        float[,] moistureMap = MapGenerateUtils.CreateMoistureNoise(mapChunkSize, centre, moistureData, heightMap, heatMap, _moistureHeightCurve);
+        int[,] biomesMap = MapGenerateUtils.CreateBiomesNoise(mapChunkSize, heightMap, heatMap, moistureMap, biomeData);
 
-        return new MapData(heightMap, null, null, null, null);
+        return new MapData(heightMap, heatMap, moistureMap, biomesMap, null);
     }
 
     float[,] GenerateNoiseMap(Vector2 centre) {
@@ -180,6 +231,11 @@ public class MapGenerator : MonoBehaviour {
         float[,] oceansMap = Noise.GenerateNoiseMap(mapChunkSize, mapChunkSize, centre, oceansData);
         float[,] plainsMap = Noise.GenerateNoiseMap(mapChunkSize, mapChunkSize, centre, plainsData);
         float[,] mountainsMap = Noise.GenerateNoiseMap(mapChunkSize, mapChunkSize, centre, mountainsData);
+
+        AnimationCurve oceanSmoothestCurveHeight = new AnimationCurve(_oceanSmoothestCurveHeight.keys);
+        AnimationCurve oceanCurveHeight = new AnimationCurve(_oceanCurveHeight.keys);
+        AnimationCurve plainsCurveHeight = new AnimationCurve(_plainsCurveHeight.keys);
+        AnimationCurve plainsSmoothestCurveHeight = new AnimationCurve(_plainsSmoothestCurveHeight.keys);
 
         int height = heightLevelMap.GetLength(0);
         int width = heightLevelMap.GetLength(1);
@@ -272,18 +328,6 @@ public class MapGenerator : MonoBehaviour {
         }
     }
 
-    // ----------------- TRANSFORM -----------------
-
-    private float[,] TransformMatrixIntoMinusTwo(float[,] matrix) {
-        float[,] newMatrix = new float[matrix.GetLength(0) - 2, matrix.GetLength(1) - 2];
-        for (int y = 1; y < newMatrix.GetLength(0) + 1; y++) {
-            for (int x = 1; x < newMatrix.GetLength(1) + 1; x++) {
-                newMatrix[y - 1, x - 1] = matrix[y + 1, x + 1];
-            }
-        }
-        return newMatrix;
-    }
-
     // ----------------- GETTERS AND SETTERS -----------------
 
     public DrawNoiseMode GetDrawMode() {
@@ -302,6 +346,7 @@ public class MapGenerator : MonoBehaviour {
 
     public void DefaultData() {
         DefaultDataTerrain();
+        DefaultDataBiomes();
     }
 
     private void DefaultDataTerrain() {
@@ -322,6 +367,20 @@ public class MapGenerator : MonoBehaviour {
         terrainDetailResolution = terrain.terrainData.detailResolution;
         terrainControlTextureResolution = terrain.terrainData.alphamapWidth;
         terrainBaseTextureResolution = terrain.terrainData.baseMapResolution;
+    }
+
+    private void DefaultDataBiomes() {
+        for (int idx = 0; idx < terrainLayersGroup.Count; idx++) {
+            TerrainLayersGroup terrainLayers = terrainLayersGroup[idx];
+            if (terrainLayers.drawNoiseMode == DrawNoiseMode.BIOME) {
+                terrainLayers.layers = new List<TerrainLayer>();
+                foreach (BiomeData.Biome biome in biomeData.biomes) {
+                    terrainLayers.layers.Add(biome.layer);
+                }
+                terrainLayersGroup[idx] = terrainLayers;
+                break;
+            }
+        }
     }
 
     // ----------------- CLEAR DATA -----------------
