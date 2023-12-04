@@ -26,6 +26,7 @@ public class CameraMovement : MonoBehaviour
         }
     }
 
+
     [SerializeField]
     private View view = View.THIRD_PERSON;
 
@@ -45,6 +46,7 @@ public class CameraMovement : MonoBehaviour
     private float _currentRotationX = 0.0f;
 
     private float _waitingTimeBeforeRotationCamera = 0.2f;
+
 
     void Awake()
     {

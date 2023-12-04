@@ -11,6 +11,27 @@ public class PlayerMovement : MonoBehaviour
     private Vector2 _input;
     private Vector3 _velocity;
 
+    [SerializeField]
+    private Rigidbody rb;
+    private bool _isGrounded = true;
+
+    void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            _isGrounded = true;
+        }
+    }
+
+    public void Jump(InputAction.CallbackContext context)
+    {
+        if (context.started && _isGrounded)
+        { 
+            rb.AddForce(Vector3.up * 6, ForceMode.Impulse);
+            _isGrounded = false;
+        }
+    }
+
     public void Move(InputAction.CallbackContext context) =>
         _input = context.ReadValue<Vector2>();
 
