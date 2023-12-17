@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: HeightNoiseData
   m_EditorClassIdentifier: 
   autoUpdate: 1
-  _name: 
+  _name: Height
   normalizeMode: 1
   noiseScale: 100
   octaves: 4
