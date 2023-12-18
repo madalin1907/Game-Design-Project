@@ -86,8 +86,6 @@ public static class MapGenerateUtils {
             }
         }
 
-        return splatmapData;
-
         for (int y = 0; y < terrainBaseTextureResolution; y++) {
             for (int x = 0; x < terrainBaseTextureResolution; x++) {
                 int control = 0;
