@@ -15,10 +15,10 @@ MonoBehaviour:
   autoUpdate: 0
   _name: Resources
   normalizeMode: 0
-  noiseScale: 0.8
+  noiseScale: 9
   octaves: 4
-  persistance: 0.25
-  lacunarity: 1.25
+  persistance: 1
+  lacunarity: 20
   amplitude: 1
   frequency: 1
   minLevel: 1

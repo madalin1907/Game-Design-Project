@@ -7,6 +7,9 @@ public static class MapGenerateUtils {
 
     const float epsilon = 0.001f;
 
+    private static Dictionary<BiomeTag, int> biomeTagIndex = new Dictionary<BiomeTag, int>();
+    private static Dictionary<int, BiomeTag> biomeIndexTag = new Dictionary<int, BiomeTag>();
+
     public static float[,,] GenerateSplatsMapForHeight(
         TerrainData terrainData, 
         float[,] heightMap, 
@@ -208,4 +211,33 @@ public static class MapGenerateUtils {
         return biomesNoise;
     }
 
+    public static int intPseudoRandom2(int x, int y) {
+        long a = 1103515245;
+        long c = 12345;
+        long m = 2147483647;
+
+        long res = (a * x + c) % m;
+
+        return (int)res;
+    }
+
+    public static void InitializeBiomesTagIndex(BiomeData biomeData) {
+        biomeTagIndex.Clear();
+        for (int i = 0; i < biomeData.biomes.Length; i++) {
+            biomeTagIndex.Add(biomeData.biomes[i].tag, i);
+        }
+
+        biomeIndexTag.Clear();
+        for (int i = 0; i < biomeData.biomes.Length; i++) {
+            biomeIndexTag.Add(i, biomeData.biomes[i].tag);
+        }
+    }
+
+    public static int GetBiomeIndex(BiomeTag tag) {
+        return biomeTagIndex[tag];
+    }
+
+    public static BiomeTag GetBiomeTag(int index) {
+        return biomeIndexTag[index];
+    }
 }
