@@ -61,19 +61,19 @@ MonoBehaviour:
     layer: {fileID: 8574412962073106934, guid: 20d44181bf0267c4d99e320dfee046fc, type: 2}
     heat: 0.3
     moisture: 1
-    height: 0.5
+    height: 0.57
   - name: Grassland
     tag: 8
     layer: {fileID: 8574412962073106934, guid: 8420d9f9150409648a7f1142c43021ab, type: 2}
     heat: 0.7
     moisture: 0.5
-    height: 0.5
+    height: 0.57
   - name: Forest
     tag: 9
     layer: {fileID: 8574412962073106934, guid: 0e213d41839399d4ba7d07e804725164, type: 2}
     heat: 0.7
     moisture: 1
-    height: 0.5
+    height: 0.53
   - name: Desert
     tag: 10
     layer: {fileID: 8574412962073106934, guid: efccf49f1e5216a4da9cb8e9d15ab84e, type: 2}
