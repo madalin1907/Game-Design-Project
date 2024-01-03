@@ -2,14 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Unity.Collections;
-using Unity.VisualScripting;
-using Unity.VisualScripting.Antlr3.Runtime.Tree;
-using UnityEditor.Search;
 using UnityEngine;
-using UnityEngine.UIElements;
-using static MapGenerator;
-
-public enum Resources { TEMEPERATE_FOREST };
 
 public enum TopographyMode { FLAT, RELIEF }
 public enum DrawNoiseMode { HEIGHT, LEVEL, HEAT, MOISTURE, BIOME, RESOURCES };
@@ -18,7 +11,7 @@ public class MapGenerator : MonoBehaviour {
 
     [SerializeField] private TopographyMode topographyMode;
     [SerializeField] private DrawNoiseMode drawNoiseMode;
-    [SerializeField] private bool drawTrees;
+    [SerializeField] private bool drawResources;
 
     [SerializeField] private bool autoUpdate;
 
@@ -246,24 +239,24 @@ public class MapGenerator : MonoBehaviour {
     private void DrawMesh(Terrain terrain, MapData mapData) {
         terrain.terrainData.SetHeights(0, 0, mapData.heightMap);
 
-        if (drawTrees)
-            DrawTreesMap(terrain, mapData);
+        if (drawResources)
+            DrawResourcesMesh(terrain, mapData);
     }
 
-    private void DrawTreesMap(Terrain terrain, MapData mapData) {
+    private void DrawResourcesMesh(Terrain terrain, MapData mapData) {
         GameObject chunkObject = terrain.gameObject;
 
-        GameObject treesParentObject = new GameObject("Trees");
-        treesParentObject.transform.parent = chunkObject.transform;
-        treesParentObject.transform.localPosition = Vector3.zero;
+        GameObject resourcesParentObject = new GameObject("Resources");
+        resourcesParentObject.transform.parent = chunkObject.transform;
+        resourcesParentObject.transform.localPosition = Vector3.zero;
 
         for (int y = 0; y < mapData.heightMap.GetLength(0); y++) {
             for (int x = 0; x < mapData.heightMap.GetLength(1); x++) {
                 float height = mapData.heightMap[y, x];
-                if (height < oceanMaxHeight || height > oceanMaxHeight + plainMaxHeight || mapData.resourcesMap[y, x] == -1)
+                if (height < oceanMaxHeight || mapData.resourcesMap[y, x] == -1)
                     continue;
 
-                GenerateResource(treesParentObject.transform, new Vector3(x, height, y), mapData.resourcesMap[y, x]);
+                GenerateResource(resourcesParentObject.transform, new Vector3(x, height, y), mapData.resourcesMap[y, x]);
                 
                 mapData.resourcesMap[y, x] = -1;
             }
@@ -367,10 +360,15 @@ public class MapGenerator : MonoBehaviour {
             }
         }
 
-        return CreateResourcesTypeNoiseMap(baseMap, heightMap, biomesMap);
+        Vector2Int centreInt = new Vector2Int(
+            (int)centre.x,
+            (int)centre.y
+        );
+
+        return CreateResourcesTypeNoiseMap(centreInt, baseMap, biomesMap);
     }
 
-    private int[,] CreateResourcesTypeNoiseMap(float[,] baseMap, float[,] heightMap, int[,] biomesMap) {
+    private int[,] CreateResourcesTypeNoiseMap(Vector2Int centre, float[,] baseMap, int[,] biomesMap) {
         int[,] resourcesMap = new int[baseMap.GetLength(0), baseMap.GetLength(1)];
 
         int lengthR = baseMap.GetLength(0);
@@ -389,15 +387,15 @@ public class MapGenerator : MonoBehaviour {
 
                 float totalProbability = 0;
                 for (int i = 0; i < resources.Count; i++) {
-                    if (resources[i].biome != tag)
+                    if (resources[i].biome != tag && resources[i].biome != BiomeTag.EVERYTHING)
                         continue;
                     totalProbability += resources[i].probability;
                 }
 
-                float randomValue = (MapGenerateUtils.intPseudoRandom2(x, y) % 1000 / 1000f) * Mathf.Max(1, totalProbability);
+                float randomValue = (MapGenerateUtils.intPseudoRandom2(centre.x + x, centre.y + y) % 100000 / 100000f) * Mathf.Max(1, totalProbability);
                 float currentProbability = 0;
                 for (int i = 0; i < resources.Count; i++) {
-                    if (resources[i].biome != tag)
+                    if (resources[i].biome != tag && resources[i].biome != BiomeTag.EVERYTHING)
                         continue;
                     if (currentProbability <= randomValue && randomValue <= currentProbability + resources[i].probability) {
                         resourcesMap[y, x] = i;

@@ -90,7 +90,7 @@ public static class MapGenerateUtils {
         }
 
         return splatmapData;
-
+        /*
         for (int y = 0; y < terrainBaseTextureResolution; y++) {
             for (int x = 0; x < terrainBaseTextureResolution; x++) {
                 int control = 0;
@@ -126,6 +126,8 @@ public static class MapGenerateUtils {
         }
 
         return splatmapData;
+        */
+
     }
 
     public static float[,] CreateHeatNoise(
@@ -212,11 +214,17 @@ public static class MapGenerateUtils {
     }
 
     public static int intPseudoRandom2(int x, int y) {
-        long a = 1103515245;
-        long c = 12345;
+        long v = (long)x;
+        long u = (long)y;
+        long res;
         long m = 2147483647;
 
-        long res = (a * x + c) % m;
+        if (v < 0) v += m;
+        if (u < 0) u += m;
+
+        v = 36969 * (v & 65535) + (v >> 16);
+        u = 18000 * (u & 65535) + (u >> 16);
+        res = ((v << 16) + (u & 65535)) % m;
 
         return (int)res;
     }

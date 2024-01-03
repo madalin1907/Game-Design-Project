@@ -15,7 +15,8 @@ public enum BiomeTag {
     JUNGLE,
     ROCK,
     MOUNTAIN_ICE,
-    NOTHING
+    NOTHING,
+    EVERYTHING
 }
 
 [CreateAssetMenu()]
