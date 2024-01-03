@@ -16,6 +16,7 @@ public class MapGenerator : MonoBehaviour {
     [SerializeField] private bool autoUpdate;
 
     [Header("Map Settings")]
+    [SerializeField] private int seed;
     [SerializeField, ReadOnly] private int mapChunkSize;
     [SerializeField][Range(0, 10)] public int editorDistanceViewChunks;
     [SerializeField] private float oceanNoiseLevel;
@@ -270,8 +271,8 @@ public class MapGenerator : MonoBehaviour {
 
         float[,] heightMap = GenerateNoiseMap(centre);
 
-        float[,] heatMap = MapGenerateUtils.CreateHeatNoise(mapChunkSize, centre, heatData, heightMap);
-        float[,] moistureMap = MapGenerateUtils.CreateMoistureNoise(mapChunkSize, centre, moistureData, heightMap, heatMap, _moistureHeightCurve);
+        float[,] heatMap = MapGenerateUtils.CreateHeatNoise(seed, mapChunkSize, centre, heatData, heightMap);
+        float[,] moistureMap = MapGenerateUtils.CreateMoistureNoise(seed, mapChunkSize, centre, moistureData, heightMap, heatMap, _moistureHeightCurve);
         int[,] biomesMap = MapGenerateUtils.CreateBiomesNoise(mapChunkSize, heightMap, heatMap, moistureMap, biomeData);
 
         int[,] resourcesMap = CreateResourcesNoiseMap(centre, densityResources, heightMap, biomesMap);
@@ -281,11 +282,11 @@ public class MapGenerator : MonoBehaviour {
 
     float[,] GenerateNoiseMap(Vector2 centre) {
         float[,] heightMap = new float[mapChunkSize, mapChunkSize];
-        float[,] heightLevelMap = Noise.GenerateNoiseMap(mapChunkSize, mapChunkSize, centre, heightData);
+        float[,] heightLevelMap = Noise.GenerateNoiseMap(mapChunkSize, mapChunkSize, centre, heightData, seed);
 
-        float[,] oceansMap = Noise.GenerateNoiseMap(mapChunkSize, mapChunkSize, centre, oceansData);
-        float[,] plainsMap = Noise.GenerateNoiseMap(mapChunkSize, mapChunkSize, centre, plainsData);
-        float[,] mountainsMap = Noise.GenerateNoiseMap(mapChunkSize, mapChunkSize, centre, mountainsData);
+        float[,] oceansMap = Noise.GenerateNoiseMap(mapChunkSize, mapChunkSize, centre, oceansData, seed);
+        float[,] plainsMap = Noise.GenerateNoiseMap(mapChunkSize, mapChunkSize, centre, plainsData, seed);
+        float[,] mountainsMap = Noise.GenerateNoiseMap(mapChunkSize, mapChunkSize, centre, mountainsData, seed);
 
         AnimationCurve oceanSmoothestCurveHeight = new AnimationCurve(_oceanSmoothestCurveHeight.keys);
         AnimationCurve oceanCurveHeight = new AnimationCurve(_oceanCurveHeight.keys);
@@ -325,7 +326,7 @@ public class MapGenerator : MonoBehaviour {
     }
 
     int[,] CreateResourcesNoiseMap(Vector2 centre, float rarity, float[,] heightMap, int[,] biomesMap) {
-        float[,] baseMap = Noise.GenerateNoiseMap(mapChunkSize, mapChunkSize, centre, resourcesData);
+        float[,] baseMap = Noise.GenerateNoiseMap(mapChunkSize, mapChunkSize, centre, resourcesData, seed);
 
         int lengthR = baseMap.GetLength(0);
         int lengthC = baseMap.GetLength(1);

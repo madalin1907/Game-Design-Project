@@ -5,8 +5,8 @@ public static class Noise {
 
     public enum NormalizeMode { Local, Global };
 
-    public static float[,] GenerateNoiseMap(int mapWidth, int mapHeight, Vector2 centre, NoiseData noiseData) {
-        int seed = noiseData.seed;
+    public static float[,] GenerateNoiseMap(int mapWidth, int mapHeight, Vector2 centre, NoiseData noiseData, int worldSeed) {
+        int seed = noiseData.seed + worldSeed;
         float scale = noiseData.noiseScale;
         int octaves = noiseData.octaves;
         float persistance = noiseData.persistance;
