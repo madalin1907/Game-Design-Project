@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: OceansNoiseData
   m_EditorClassIdentifier: 
   autoUpdate: 1
-  name: Oceans
+  _name: 
   normalizeMode: 1
   noiseScale: 10
   octaves: 4
@@ -22,5 +22,5 @@ MonoBehaviour:
   amplitude: 0.7
   frequency: 1
   minLevel: 0
-  seed: 16
+  seed: 3
   offset: {x: 0, y: 0}
