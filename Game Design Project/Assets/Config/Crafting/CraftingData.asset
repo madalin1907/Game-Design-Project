@@ -1,0 +1,103 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62b29bef791195e40b52f243eac953a0, type: 3}
+  m_Name: CraftingData
+  m_EditorClassIdentifier: 
+  update: 0
+  itemData: {fileID: 11400000, guid: 02b3bacb9eb6af04e95d093e61658d67, type: 2}
+  recipes:
+  - result:
+      _name: Wood
+      _id: 1
+      _count: 1
+    row0:
+      ingredient0:
+        _name: Wood
+        _id: 1
+        _count: 1
+      ingredient1:
+        _name: Wood
+        _id: 1
+        _count: 2
+      ingredient2:
+        _name: Wood
+        _id: 1
+        _count: 2
+    row1:
+      ingredient0:
+        _name: 
+        _id: 0
+        _count: 0
+      ingredient1:
+        _name: 
+        _id: 0
+        _count: 0
+      ingredient2:
+        _name: 
+        _id: 0
+        _count: 0
+    row2:
+      ingredient0:
+        _name: 
+        _id: 0
+        _count: 0
+      ingredient1:
+        _name: 
+        _id: 0
+        _count: 0
+      ingredient2:
+        _name: 
+        _id: 0
+        _count: 0
+  - result:
+      _name: Diamond Sword
+      _id: 2
+      _count: 1
+    row0:
+      ingredient0:
+        _name: Wood
+        _id: 1
+        _count: 1
+      ingredient1:
+        _name: Wood
+        _id: 1
+        _count: 2
+      ingredient2:
+        _name: Wood
+        _id: 1
+        _count: 1
+    row1:
+      ingredient0:
+        _name: 
+        _id: 0
+        _count: 0
+      ingredient1:
+        _name: 
+        _id: 0
+        _count: 0
+      ingredient2:
+        _name: 
+        _id: 0
+        _count: 0
+    row2:
+      ingredient0:
+        _name: 
+        _id: 0
+        _count: 0
+      ingredient1:
+        _name: 
+        _id: 0
+        _count: 0
+      ingredient2:
+        _name: 
+        _id: 0
+        _count: 0

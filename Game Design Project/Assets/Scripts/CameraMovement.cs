@@ -25,6 +25,9 @@ public class CameraMovement : MonoBehaviour
     [SerializeField]
     private float _distance = 7.0f; // Adjust the distance to your preference
 
+    [SerializeField]
+    private InventoryMechanism inventoryMechanism;
+
     private float _currentRotationY = 0.0f;
     private float _currentRotationX = 0.0f;
 
@@ -32,6 +35,33 @@ public class CameraMovement : MonoBehaviour
 
     public void Rotate(InputAction.CallbackContext context)
     {
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> a43b7ab (Added inventory and crafting mechanism. The functionality to add new recipes or items in the game and also the functionality to drop items and pick them up)
+=======
+>>>>>>> a43b7ab (Added inventory and crafting mechanism. The functionality to add new recipes or items in the game and also the functionality to drop items and pick them up)
+=======
+>>>>>>> a43b7ab (Added inventory and crafting mechanism. The functionality to add new recipes or items in the game and also the functionality to drop items and pick them up)
+        if (inventoryMechanism.IsInventoryOpen()) {
+            _mouseX = 0f;
+            _mouseY = 0f;
+            return;
+        }
+
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> a43b7ab (Added inventory and crafting mechanism. The functionality to add new recipes or items in the game and also the functionality to drop items and pick them up)
+=======
+>>>>>>> a43b7ab (Added inventory and crafting mechanism. The functionality to add new recipes or items in the game and also the functionality to drop items and pick them up)
+=======
+>>>>>>> a43b7ab (Added inventory and crafting mechanism. The functionality to add new recipes or items in the game and also the functionality to drop items and pick them up)
+=======
+>>>>>>> a43b7ab (Added inventory and crafting mechanism. The functionality to add new recipes or items in the game and also the functionality to drop items and pick them up)
         var mouseCoords = context.ReadValue<Vector2>();
         _mouseX = mouseCoords.x;
         _mouseY = mouseCoords.y;
@@ -39,7 +69,31 @@ public class CameraMovement : MonoBehaviour
 
     public void Switch(InputAction.CallbackContext context)
     {
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
         
+=======
+        if (inventoryMechanism.IsInventoryOpen())
+            return;
+
+>>>>>>> a43b7ab (Added inventory and crafting mechanism. The functionality to add new recipes or items in the game and also the functionality to drop items and pick them up)
+=======
+        if (inventoryMechanism.IsInventoryOpen())
+            return;
+
+>>>>>>> a43b7ab (Added inventory and crafting mechanism. The functionality to add new recipes or items in the game and also the functionality to drop items and pick them up)
+=======
+        if (inventoryMechanism.IsInventoryOpen())
+            return;
+
+>>>>>>> a43b7ab (Added inventory and crafting mechanism. The functionality to add new recipes or items in the game and also the functionality to drop items and pick them up)
+=======
+        if (inventoryMechanism.IsInventoryOpen())
+            return;
+
+>>>>>>> a43b7ab (Added inventory and crafting mechanism. The functionality to add new recipes or items in the game and also the functionality to drop items and pick them up)
         if (context.started)
         {
             if (view == View.FIRST_PERSON)
