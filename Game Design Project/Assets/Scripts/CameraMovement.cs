@@ -1,30 +1,14 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public enum View { FIRST_PERSON, THIRD_PERSON };
 
 public class CameraMovement : MonoBehaviour
 {
     private float _mouseX;
     private float _mouseY;
 
-    public void Rotate(InputAction.CallbackContext context)
-    {
-        var mouseCoords = context.ReadValue<Vector2>();
-        _mouseX = mouseCoords.x;
-        _mouseY = mouseCoords.y;
-    }
-
-    public void Switch(InputAction.CallbackContext context)
-    {
-        if (context.started)
-        {
-            if (view == View.FIRST_PERSON)
-                view = View.THIRD_PERSON;
-            else
-                view = View.FIRST_PERSON;
-        }
-    }
+    [SerializeField]
+    private enum View { FIRST_PERSON, THIRD_PERSON };
 
     [SerializeField]
     private View view = View.THIRD_PERSON;
@@ -41,10 +25,46 @@ public class CameraMovement : MonoBehaviour
     [SerializeField]
     private float _distance = 7.0f; // Adjust the distance to your preference
 
+    [SerializeField]
+    private InventoryMechanism inventoryMechanism;
+
     private float _currentRotationY = 0.0f;
     private float _currentRotationX = 0.0f;
 
     private float _waitingTimeBeforeRotationCamera = 0.2f;
+
+    public void Rotate(InputAction.CallbackContext context)
+    {
+        if (inventoryMechanism.IsInventoryOpen()) {
+            _mouseX = 0f;
+            _mouseY = 0f;
+            return;
+        }
+
+        var mouseCoords = context.ReadValue<Vector2>();
+        _mouseX = mouseCoords.x;
+        _mouseY = mouseCoords.y;
+    }
+
+    public void Switch(InputAction.CallbackContext context)
+    {
+        if (inventoryMechanism.IsInventoryOpen())
+            return;
+
+        if (context.started)
+        {
+            if (view == View.FIRST_PERSON)
+            {
+                view = View.THIRD_PERSON;
+                Debug.Log("Switch to third person camera.");
+            }
+            else
+            {
+                view = View.FIRST_PERSON;
+                Debug.Log("Switch to first person camera.");
+            }
+        }
+    }
 
     void Awake()
     {
@@ -64,13 +84,9 @@ public class CameraMovement : MonoBehaviour
             return;
 
         if (view == View.THIRD_PERSON)
-        {
             LateUpdateThirdPerson();
-        }
         else
-        {
             LateUpdateFirstPerson();
-        }
     }
 
     void LateUpdateThirdPerson()
@@ -89,6 +105,9 @@ public class CameraMovement : MonoBehaviour
 
         // Smoothly move the camera to the desired position
         transform.position = Vector3.Lerp(transform.position, desiredPosition, 0.2f);
+
+        // Make the player rotate with the camera
+        player.transform.rotation = Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0);
 
         // Make the camera look at the player
         transform.LookAt(player.transform.position);
@@ -119,5 +138,8 @@ public class CameraMovement : MonoBehaviour
             0
         );
         transform.rotation = nextRotation;
+
+        // Make the player rotate with the camera
+        player.transform.rotation = Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0);
     }
 }

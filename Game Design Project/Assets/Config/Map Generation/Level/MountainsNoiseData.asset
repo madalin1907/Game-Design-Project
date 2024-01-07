@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: MountainsNoiseData
   m_EditorClassIdentifier: 
   autoUpdate: 1
-  name: Mountains
+  _name: Mountains
   normalizeMode: 1
   noiseScale: 50
   octaves: 4
@@ -22,5 +22,5 @@ MonoBehaviour:
   amplitude: 0.4
   frequency: 0.3
   minLevel: 0
-  seed: 64
+  seed: 1
   offset: {x: 0, y: 0}

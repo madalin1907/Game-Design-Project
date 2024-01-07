@@ -7,6 +7,9 @@ public static class MapGenerateUtils {
 
     const float epsilon = 0.001f;
 
+    private static Dictionary<BiomeTag, int> biomeTagIndex = new Dictionary<BiomeTag, int>();
+    private static Dictionary<int, BiomeTag> biomeIndexTag = new Dictionary<int, BiomeTag>();
+
     public static float[,,] GenerateSplatsMapForHeight(
         TerrainData terrainData, 
         float[,] heightMap, 
@@ -87,7 +90,7 @@ public static class MapGenerateUtils {
         }
 
         return splatmapData;
-
+        /*
         for (int y = 0; y < terrainBaseTextureResolution; y++) {
             for (int x = 0; x < terrainBaseTextureResolution; x++) {
                 int control = 0;
@@ -123,16 +126,19 @@ public static class MapGenerateUtils {
         }
 
         return splatmapData;
+        */
+
     }
 
     public static float[,] CreateHeatNoise(
+        int seed,
         int mapChunkSize, 
         Vector2 centre, 
         NoiseData noiseData, 
         float[,] heightMap
     ) {
 
-        float[,] heatMap = Noise.GenerateNoiseMap(mapChunkSize, mapChunkSize, centre, noiseData);
+        float[,] heatMap = Noise.GenerateNoiseMap(mapChunkSize, mapChunkSize, centre, noiseData, seed);
 
         for (int y = 0; y < mapChunkSize; y++) {
             for (int x = 0; x < mapChunkSize; x++) {
@@ -145,6 +151,7 @@ public static class MapGenerateUtils {
     }
 
     public static float[,] CreateMoistureNoise(
+        int seed,
         int mapChunkSize, 
         Vector2 centre,
         NoiseData noiseData, 
@@ -154,7 +161,7 @@ public static class MapGenerateUtils {
     ) {
 
         AnimationCurve moistureHeightCurve = new AnimationCurve(_moistureHeightCurve.keys);
-        float[,] moistureNoise = Noise.GenerateNoiseMap(mapChunkSize, mapChunkSize, centre, noiseData);
+        float[,] moistureNoise = Noise.GenerateNoiseMap(mapChunkSize, mapChunkSize, centre, noiseData, seed);
 
         for (int y = 0; y < mapChunkSize; y++) {
             for (int x = 0; x < mapChunkSize; x++) {
@@ -208,4 +215,39 @@ public static class MapGenerateUtils {
         return biomesNoise;
     }
 
+    public static int intPseudoRandom2(int x, int y) {
+        long v = (long)x;
+        long u = (long)y;
+        long res;
+        long m = 2147483647;
+
+        if (v < 0) v += m;
+        if (u < 0) u += m;
+
+        v = 36969 * (v & 65535) + (v >> 16);
+        u = 18000 * (u & 65535) + (u >> 16);
+        res = ((v << 16) + (u & 65535)) % m;
+
+        return (int)res;
+    }
+
+    public static void InitializeBiomesTagIndex(BiomeData biomeData) {
+        biomeTagIndex.Clear();
+        for (int i = 0; i < biomeData.biomes.Length; i++) {
+            biomeTagIndex.Add(biomeData.biomes[i].tag, i);
+        }
+
+        biomeIndexTag.Clear();
+        for (int i = 0; i < biomeData.biomes.Length; i++) {
+            biomeIndexTag.Add(i, biomeData.biomes[i].tag);
+        }
+    }
+
+    public static int GetBiomeIndex(BiomeTag tag) {
+        return biomeTagIndex[tag];
+    }
+
+    public static BiomeTag GetBiomeTag(int index) {
+        return biomeIndexTag[index];
+    }
 }

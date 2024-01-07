@@ -2,21 +2,21 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Unity.Collections;
-using Unity.VisualScripting;
-using UnityEditor.Search;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public enum TopographyMode { FLAT, RELIEF }
-public enum DrawNoiseMode { HEIGHT, LEVEL, HEAT, MOISTURE, BIOME };
+public enum DrawNoiseMode { HEIGHT, LEVEL, HEAT, MOISTURE, BIOME, RESOURCES };
 
 public class MapGenerator : MonoBehaviour {
 
     [SerializeField] private TopographyMode topographyMode;
     [SerializeField] private DrawNoiseMode drawNoiseMode;
+    [SerializeField] private bool drawResources;
+
     [SerializeField] private bool autoUpdate;
 
     [Header("Map Settings")]
+    [SerializeField] private int seed;
     [SerializeField, ReadOnly] private int mapChunkSize;
     [SerializeField][Range(0, 10)] public int editorDistanceViewChunks;
     [SerializeField] private float oceanNoiseLevel;
@@ -24,6 +24,7 @@ public class MapGenerator : MonoBehaviour {
     [SerializeField] private float oceanMaxHeight;
     [SerializeField] private float plainMaxHeight;
     [SerializeField] private float mountainMaxHeight;
+    [SerializeField] private float densityResources;
     [SerializeField] private AnimationCurve _oceanSmoothestCurveHeight;
     [SerializeField] private AnimationCurve _oceanCurveHeight;
     [SerializeField] private AnimationCurve _plainsCurveHeight;
@@ -37,6 +38,7 @@ public class MapGenerator : MonoBehaviour {
     [SerializeField] private NoiseData mountainsData;
     [SerializeField] private NoiseData heatData;
     [SerializeField] private NoiseData moistureData;
+    [SerializeField] private NoiseData resourcesData;
     [SerializeField] private BiomeData biomeData;
 
     [Header("Terrain")]
@@ -45,6 +47,11 @@ public class MapGenerator : MonoBehaviour {
     [SerializeField] private Material terrainMaterialForTexture;
     [SerializeField] private List <TerrainLayersGroup> terrainLayersGroup = new List<TerrainLayersGroup>();
     [SerializeField] private int terrainSmoothingEdge = 5;
+
+    [Header("Resources")]
+
+    [SerializeField] private List <ResourcesData> resources = new List<ResourcesData>();
+    Dictionary<BiomeTag, bool> biomesApparition = new Dictionary<BiomeTag, bool>();
 
     private int terrainChunkSize;
     private int terrainChunkHeight;
@@ -137,6 +144,10 @@ public class MapGenerator : MonoBehaviour {
             case DrawNoiseMode.BIOME:
                 DrawBiomeMap(terrain, mapData);
                 break;
+
+            case DrawNoiseMode.RESOURCES:
+                DrawResourcesMap(terrain, mapData);
+                break;
         }
     }
 
@@ -168,6 +179,25 @@ public class MapGenerator : MonoBehaviour {
             mapData.moistureMap,
             terrainBaseTextureResolution,
             terrainSmoothingEdge
+        );
+
+        terrain.terrainData.SetAlphamaps(0, 0, splatsMap);
+    }
+
+    private void DrawResourcesMap (Terrain terrain, MapData mapData) {
+        float[,] floatResourcesMap = new float[mapData.resourcesMap.GetLength(0), mapData.resourcesMap.GetLength(1)];
+        for (int y = 0; y < mapData.resourcesMap.GetLength(0); y++) {
+            for (int x = 0; x < mapData.resourcesMap.GetLength(1); x++) {
+                if (mapData.resourcesMap[y, x] >= 0)
+                    floatResourcesMap[y, x] = 1;
+            }
+        }
+
+        float[,,] splatsMap = MapGenerateUtils.GenerateSplatsMapForHeight(
+            terrain.terrainData,
+            floatResourcesMap,
+            terrainBaseTextureResolution,
+            0
         );
 
         terrain.terrainData.SetAlphamaps(0, 0, splatsMap);
@@ -209,6 +239,29 @@ public class MapGenerator : MonoBehaviour {
 
     private void DrawMesh(Terrain terrain, MapData mapData) {
         terrain.terrainData.SetHeights(0, 0, mapData.heightMap);
+
+        if (drawResources)
+            DrawResourcesMesh(terrain, mapData);
+    }
+
+    private void DrawResourcesMesh(Terrain terrain, MapData mapData) {
+        GameObject chunkObject = terrain.gameObject;
+
+        GameObject resourcesParentObject = new GameObject("Resources");
+        resourcesParentObject.transform.parent = chunkObject.transform;
+        resourcesParentObject.transform.localPosition = Vector3.zero;
+
+        for (int y = 0; y < mapData.heightMap.GetLength(0); y++) {
+            for (int x = 0; x < mapData.heightMap.GetLength(1); x++) {
+                float height = mapData.heightMap[y, x];
+                if (height < oceanMaxHeight || mapData.resourcesMap[y, x] == -1)
+                    continue;
+
+                GenerateResource(resourcesParentObject.transform, new Vector3(x, height, y), mapData.resourcesMap[y, x]);
+                
+                mapData.resourcesMap[y, x] = -1;
+            }
+        }
     }
 
     // ----------------- MAP GENERATION -----------------
@@ -217,20 +270,23 @@ public class MapGenerator : MonoBehaviour {
         centre = new Vector2(centre.y * (mapChunkSize - 1), -centre.x * (mapChunkSize - 1));
 
         float[,] heightMap = GenerateNoiseMap(centre);
-        float[,] heatMap = MapGenerateUtils.CreateHeatNoise(mapChunkSize, centre, heatData, heightMap);
-        float[,] moistureMap = MapGenerateUtils.CreateMoistureNoise(mapChunkSize, centre, moistureData, heightMap, heatMap, _moistureHeightCurve);
+
+        float[,] heatMap = MapGenerateUtils.CreateHeatNoise(seed, mapChunkSize, centre, heatData, heightMap);
+        float[,] moistureMap = MapGenerateUtils.CreateMoistureNoise(seed, mapChunkSize, centre, moistureData, heightMap, heatMap, _moistureHeightCurve);
         int[,] biomesMap = MapGenerateUtils.CreateBiomesNoise(mapChunkSize, heightMap, heatMap, moistureMap, biomeData);
 
-        return new MapData(heightMap, heatMap, moistureMap, biomesMap, null);
+        int[,] resourcesMap = CreateResourcesNoiseMap(centre, densityResources, heightMap, biomesMap);
+
+        return new MapData(heightMap, heatMap, moistureMap, biomesMap, resourcesMap);
     }
 
     float[,] GenerateNoiseMap(Vector2 centre) {
         float[,] heightMap = new float[mapChunkSize, mapChunkSize];
-        float[,] heightLevelMap = Noise.GenerateNoiseMap(mapChunkSize, mapChunkSize, centre, heightData);
+        float[,] heightLevelMap = Noise.GenerateNoiseMap(mapChunkSize, mapChunkSize, centre, heightData, seed);
 
-        float[,] oceansMap = Noise.GenerateNoiseMap(mapChunkSize, mapChunkSize, centre, oceansData);
-        float[,] plainsMap = Noise.GenerateNoiseMap(mapChunkSize, mapChunkSize, centre, plainsData);
-        float[,] mountainsMap = Noise.GenerateNoiseMap(mapChunkSize, mapChunkSize, centre, mountainsData);
+        float[,] oceansMap = Noise.GenerateNoiseMap(mapChunkSize, mapChunkSize, centre, oceansData, seed);
+        float[,] plainsMap = Noise.GenerateNoiseMap(mapChunkSize, mapChunkSize, centre, plainsData, seed);
+        float[,] mountainsMap = Noise.GenerateNoiseMap(mapChunkSize, mapChunkSize, centre, mountainsData, seed);
 
         AnimationCurve oceanSmoothestCurveHeight = new AnimationCurve(_oceanSmoothestCurveHeight.keys);
         AnimationCurve oceanCurveHeight = new AnimationCurve(_oceanCurveHeight.keys);
@@ -267,6 +323,91 @@ public class MapGenerator : MonoBehaviour {
         }
 
         return heightMap;
+    }
+
+    int[,] CreateResourcesNoiseMap(Vector2 centre, float rarity, float[,] heightMap, int[,] biomesMap) {
+        float[,] baseMap = Noise.GenerateNoiseMap(mapChunkSize, mapChunkSize, centre, resourcesData, seed);
+
+        int lengthR = baseMap.GetLength(0);
+        int lengthC = baseMap.GetLength(1);
+        int marginAround = 3;
+
+        for (int x = 0; x < lengthR; x++) {
+            for (int y = 0; y < lengthC; y++) {
+
+                if (x < marginAround || y < marginAround) {
+                    baseMap[x, y] = 0;
+                    continue;
+                }
+
+                if (baseMap[x, y] < rarity) {
+                    baseMap[x, y] = 0;
+                    continue;
+                }
+
+                baseMap[x, y] = 1;
+
+                for (int i = x - marginAround; i <= x + marginAround; i++) {
+                    if (i < 0 || i >= lengthR)
+                        continue;
+                    for (int j = y - marginAround; j <= y + marginAround; j++) {
+                        if (j < 0 || j >= lengthC)
+                            continue;
+                        if (baseMap[i, j] == 1)
+                            continue;
+                        baseMap[i, j] = 0;
+                    }
+                }
+            }
+        }
+
+        Vector2Int centreInt = new Vector2Int(
+            (int)centre.x,
+            (int)centre.y
+        );
+
+        return CreateResourcesTypeNoiseMap(centreInt, baseMap, biomesMap);
+    }
+
+    private int[,] CreateResourcesTypeNoiseMap(Vector2Int centre, float[,] baseMap, int[,] biomesMap) {
+        int[,] resourcesMap = new int[baseMap.GetLength(0), baseMap.GetLength(1)];
+
+        int lengthR = baseMap.GetLength(0);
+        int lengthC = baseMap.GetLength(1);
+
+        for (int y = 0; y < lengthR; y++) {
+            for (int x = 0; x < lengthC; x++) {
+                resourcesMap[y, x] = -1;
+                if (baseMap[y, x] == 0)
+                    continue;
+
+                BiomeTag tag = MapGenerateUtils.GetBiomeTag(biomesMap[y, x]);
+                if (!biomesApparition.ContainsKey(tag)) {
+                    continue;
+                }
+
+                float totalProbability = 0;
+                for (int i = 0; i < resources.Count; i++) {
+                    if (resources[i].biome != tag && resources[i].biome != BiomeTag.EVERYTHING)
+                        continue;
+                    totalProbability += resources[i].probability;
+                }
+
+                float randomValue = (MapGenerateUtils.intPseudoRandom2(centre.x + x, centre.y + y) % 100000 / 100000f) * Mathf.Max(1, totalProbability);
+                float currentProbability = 0;
+                for (int i = 0; i < resources.Count; i++) {
+                    if (resources[i].biome != tag && resources[i].biome != BiomeTag.EVERYTHING)
+                        continue;
+                    if (currentProbability <= randomValue && randomValue <= currentProbability + resources[i].probability) {
+                        resourcesMap[y, x] = i;
+                        break;
+                    }
+                    currentProbability += resources[i].probability;
+                }
+            }
+        }
+
+        return resourcesMap;
     }
 
 
@@ -310,6 +451,29 @@ public class MapGenerator : MonoBehaviour {
         }
     }
 
+    // ----------------- Resources -----------------
+
+    private void GenerateResource(Transform parentTransform, Vector3 relativePos, int indexResource) {
+        if (parentTransform == null)
+            return;
+
+        float yOffset = -0.3f;
+        float yRotation;
+        float adaptiveScale;
+        Vector3 position;
+        GameObject resource;
+
+        yRotation = MapGenerateUtils.intPseudoRandom2((int)relativePos.x, (int)relativePos.z) % 360;
+        adaptiveScale = (MapGenerateUtils.intPseudoRandom2((int)relativePos.x, (int)relativePos.z) % 5 - 2) / 10f;
+        position = parentTransform.position + new Vector3(2 * relativePos.x, 64 * relativePos.y + yOffset, 2 * relativePos.z);
+        
+        resource = Instantiate(resources[indexResource].gameObject, position, Quaternion.identity, parentTransform);
+
+        resource.transform.localScale = Vector3.one;
+        resource.transform.localRotation = Quaternion.Euler(0f, yRotation, 0f);
+        resource.transform.localScale = Vector3.one + adaptiveScale * Vector3.one;
+    }
+
     // ----------------- THREADS -----------------
 
     public void RequestChunk(Terrain terrain, Terrain parentTerrain, Vector2Int positionChunk, int dir, Action<MapData> callback) {
@@ -347,6 +511,7 @@ public class MapGenerator : MonoBehaviour {
     public void DefaultData() {
         DefaultDataTerrain();
         DefaultDataBiomes();
+        DefaultDataResources();
     }
 
     private void DefaultDataTerrain() {
@@ -370,6 +535,7 @@ public class MapGenerator : MonoBehaviour {
     }
 
     private void DefaultDataBiomes() {
+        MapGenerateUtils.InitializeBiomesTagIndex(biomeData);
         for (int idx = 0; idx < terrainLayersGroup.Count; idx++) {
             TerrainLayersGroup terrainLayers = terrainLayersGroup[idx];
             if (terrainLayers.drawNoiseMode == DrawNoiseMode.BIOME) {
@@ -379,6 +545,14 @@ public class MapGenerator : MonoBehaviour {
                 }
                 terrainLayersGroup[idx] = terrainLayers;
                 break;
+            }
+        }
+    }
+
+    private void DefaultDataResources() {
+        for (int i = 0; i < resources.Count; i++) {
+            if (!biomesApparition.ContainsKey(resources[i].biome)) {
+                biomesApparition.Add(resources[i].biome, true);
             }
         }
     }
@@ -403,14 +577,14 @@ public struct MapData {
     public readonly float[,] moistureMap;
     public readonly int[,] biomesMap;
 
-    public readonly float[,] treesMap;
+    public readonly int[,] resourcesMap;
 
-    public MapData(float[,] heightMap, float[,] heatMap, float[,] moistureMap, int[,] biomesMap, float[,] treesMap) {
+    public MapData(float[,] heightMap, float[,] heatMap, float[,] moistureMap, int[,] biomesMap, int[,] resourcesMap) {
         this.heightMap = heightMap;
         this.heatMap = heatMap;
         this.moistureMap = moistureMap;
         this.biomesMap = biomesMap;
-        this.treesMap = treesMap;
+        this.resourcesMap = resourcesMap;
     }
 }
 
@@ -430,4 +604,11 @@ public struct TerrainDataThread {
         this.mapData = mapData;
         this.callback = callback;
     }
+}
+
+[Serializable]
+public struct ResourcesData {
+    public float probability;
+    public BiomeTag biome;
+    public GameObject gameObject;
 }

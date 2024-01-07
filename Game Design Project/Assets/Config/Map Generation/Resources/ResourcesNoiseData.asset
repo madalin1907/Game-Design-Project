@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 847de71b89ea1a74b937f8c641d36158, type: 3}
+  m_Name: ResourcesNoiseData
+  m_EditorClassIdentifier: 
+  autoUpdate: 0
+  _name: Resources
+  normalizeMode: 0
+  noiseScale: 9
+  octaves: 4
+  persistance: 1
+  lacunarity: 20
+  amplitude: 1
+  frequency: 1
+  minLevel: 1
+  seed: 15
+  offset: {x: 0, y: 0}

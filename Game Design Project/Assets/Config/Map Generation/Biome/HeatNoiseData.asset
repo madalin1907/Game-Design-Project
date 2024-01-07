@@ -22,5 +22,5 @@ MonoBehaviour:
   amplitude: 1
   frequency: 1
   minLevel: 0
-  seed: 27
+  seed: 31
   offset: {x: 0, y: 0}

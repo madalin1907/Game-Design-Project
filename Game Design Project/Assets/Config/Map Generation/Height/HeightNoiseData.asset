@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: HeightNoiseData
   m_EditorClassIdentifier: 
   autoUpdate: 1
-  _name: 
+  _name: Height
   normalizeMode: 1
   noiseScale: 100
   octaves: 4
@@ -22,5 +22,5 @@ MonoBehaviour:
   amplitude: 0.8
   frequency: 0.75
   minLevel: 0
-  seed: 1
+  seed: 0
   offset: {x: 0, y: 0}
