@@ -15,7 +15,11 @@ MonoBehaviour:
   autoUpdate: 1
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   _name: 
+=======
+  _name: Oceans
+>>>>>>> a43b7ab (Added inventory and crafting mechanism. The functionality to add new recipes or items in the game and also the functionality to drop items and pick them up)
 =======
   _name: Oceans
 >>>>>>> a43b7ab (Added inventory and crafting mechanism. The functionality to add new recipes or items in the game and also the functionality to drop items and pick them up)

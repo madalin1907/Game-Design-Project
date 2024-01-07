@@ -37,7 +37,10 @@ public class CameraMovement : MonoBehaviour
     {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> a43b7ab (Added inventory and crafting mechanism. The functionality to add new recipes or items in the game and also the functionality to drop items and pick them up)
 =======
 >>>>>>> a43b7ab (Added inventory and crafting mechanism. The functionality to add new recipes or items in the game and also the functionality to drop items and pick them up)
         if (inventoryMechanism.IsInventoryOpen()) {
@@ -47,6 +50,9 @@ public class CameraMovement : MonoBehaviour
         }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> a43b7ab (Added inventory and crafting mechanism. The functionality to add new recipes or items in the game and also the functionality to drop items and pick them up)
+=======
 >>>>>>> a43b7ab (Added inventory and crafting mechanism. The functionality to add new recipes or items in the game and also the functionality to drop items and pick them up)
 =======
 >>>>>>> a43b7ab (Added inventory and crafting mechanism. The functionality to add new recipes or items in the game and also the functionality to drop items and pick them up)
@@ -59,7 +65,13 @@ public class CameraMovement : MonoBehaviour
     {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         
+=======
+        if (inventoryMechanism.IsInventoryOpen())
+            return;
+
+>>>>>>> a43b7ab (Added inventory and crafting mechanism. The functionality to add new recipes or items in the game and also the functionality to drop items and pick them up)
 =======
         if (inventoryMechanism.IsInventoryOpen())
             return;
