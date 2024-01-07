@@ -22,6 +22,12 @@ public class PlayerMovement : MonoBehaviour
             _isGrounded = true;
         }
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+        if (collision.gameObject.CompareTag("Item")) {
+            GetComponent<InventoryMechanism>().AddItemInInventory(collision.gameObject);
+        }
+>>>>>>> a43b7ab (Added inventory and crafting mechanism. The functionality to add new recipes or items in the game and also the functionality to drop items and pick them up)
 =======
         if (collision.gameObject.CompareTag("Item")) {
             GetComponent<InventoryMechanism>().AddItemInInventory(collision.gameObject);
