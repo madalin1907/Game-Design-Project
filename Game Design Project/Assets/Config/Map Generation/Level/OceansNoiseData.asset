@@ -13,7 +13,11 @@ MonoBehaviour:
   m_Name: OceansNoiseData
   m_EditorClassIdentifier: 
   autoUpdate: 1
+<<<<<<< HEAD
   _name: 
+=======
+  _name: Oceans
+>>>>>>> a43b7ab (Added inventory and crafting mechanism. The functionality to add new recipes or items in the game and also the functionality to drop items and pick them up)
   normalizeMode: 1
   noiseScale: 10
   octaves: 4
