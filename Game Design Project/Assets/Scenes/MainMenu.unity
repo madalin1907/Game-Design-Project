@@ -289,8 +289,8 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 2071121223}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMin: {x: 1, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: -10.00001, y: 0}
   m_SizeDelta: {x: 20, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -341,14 +341,13 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 302532969}
-  - component: {fileID: 302532970}
   m_Layer: 5
   m_Name: OptionsMenu
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &302532969
 RectTransform:
   m_ObjectHideFlags: 0
@@ -371,19 +370,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 27}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &302532970
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 302532968}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3ce792c857406a64f9d3697575948357, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  volumeSlider: {fileID: 2071121224}
 --- !u!1 &323663609
 GameObject:
   m_ObjectHideFlags: 0
@@ -421,7 +407,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 90}
-  m_SizeDelta: {x: 140, y: 35}
+  m_SizeDelta: {x: 145, y: 40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &323663611
 MonoBehaviour:
@@ -684,7 +670,7 @@ RectTransform:
   m_Father: {fileID: 2071121223}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: -10}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -844,6 +830,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5b067a5223534299bf440dd1deb363d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  volumeSlider: {fileID: 2071121224}
 --- !u!1 &955483325
 GameObject:
   m_ObjectHideFlags: 0
@@ -1576,8 +1563,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 6}
-  m_SizeDelta: {x: 140, y: 35}
+  m_AnchoredPosition: {x: 0, y: 17}
+  m_SizeDelta: {x: 105, y: 25}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1684315388
 MonoBehaviour:
@@ -1722,7 +1709,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 430}
-  m_SizeDelta: {x: 160, y: 30}
+  m_SizeDelta: {x: 160, y: 40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1776315061
 MonoBehaviour:
@@ -1855,7 +1842,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 256}
-  m_SizeDelta: {x: 250, y: 30}
+  m_SizeDelta: {x: 250, y: 40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1868384311
 MonoBehaviour:
@@ -2268,7 +2255,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 94}
+  m_AnchoredPosition: {x: 0, y: 182}
   m_SizeDelta: {x: 160, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2071121224
@@ -2322,8 +2309,8 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 302532970}
-        m_TargetAssemblyTypeName: OptionsMenu, Assembly-CSharp
+      - m_Target: {fileID: 726467782}
+        m_TargetAssemblyTypeName: MainMenu, Assembly-CSharp
         m_MethodName: ChangeVolume
         m_Mode: 0
         m_Arguments:
@@ -2349,7 +2336,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &2120868599
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2369,7 +2356,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 28}
+  m_AnchoredPosition: {x: 0, y: 15}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &2147328812
