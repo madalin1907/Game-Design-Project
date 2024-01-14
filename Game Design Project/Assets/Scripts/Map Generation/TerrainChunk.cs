@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using UnityEngine;
 
 public class TerrainChunk {
@@ -9,6 +10,7 @@ public class TerrainChunk {
     private static MapGenerator mapGenerator;
 
     private bool mobWasSpawned = false;
+    private GameObject waterGameObject;
     private Vector2Int positionChunk;
     private Terrain terrain;
     private MapData mapData;
@@ -25,7 +27,7 @@ public class TerrainChunk {
 
     public void OnReceivedTerrainData (MapData _mapData) {
         mapData = _mapData;
-        mapGenerator.DrawTerrain(terrain, mapData);
+        mapGenerator.DrawTerrain(terrain, mapData, positionChunk);
         terrain.gameObject.SetActive(true);
     }
 

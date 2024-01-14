@@ -137,9 +137,12 @@ public class CameraMovement : MonoBehaviour
             transform.rotation.eulerAngles.y + _currentRotationY,
             0
         );
-        transform.rotation = nextRotation;
 
+        transform.rotation = nextRotation;
         // Make the player rotate with the camera
         player.transform.rotation = Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0);
+
+        // sync the third person camera rotation
+        _currentRotationY = transform.rotation.eulerAngles.y;
     }
 }
