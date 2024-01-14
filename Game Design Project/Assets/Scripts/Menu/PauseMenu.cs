@@ -8,6 +8,7 @@ public class PauseMenu : MonoBehaviour
     public GameObject gameplayUI;
     public GameObject pauseMenuUI;
     public GameObject optionsMenuUI;
+    public GameObject controlsMenuUI;
 
     public void TogglePauseMenu(InputAction.CallbackContext context)
     {
@@ -18,6 +19,12 @@ public class PauseMenu : MonoBehaviour
                 if (optionsMenuUI.activeSelf)
                 {
                     optionsMenuUI.SetActive(false);
+                    pauseMenuUI.SetActive(true);
+                    return;
+                }
+                else if (controlsMenuUI.activeSelf)
+                {
+                    controlsMenuUI.SetActive(false);
                     pauseMenuUI.SetActive(true);
                     return;
                 }
