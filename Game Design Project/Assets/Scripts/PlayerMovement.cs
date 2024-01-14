@@ -15,6 +15,9 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody rb;
     private bool _isGrounded = true;
 
+    [SerializeField]
+    private LayerMask layerMask;
+
     void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("Ground"))
@@ -34,6 +37,19 @@ public class PlayerMovement : MonoBehaviour
             rb.AddForce(Vector3.up * 500, ForceMode.Impulse);
             _isGrounded = false;
             Debug.Log("Jump ended");
+        }
+    }
+
+    public void Attack(InputAction.CallbackContext context)
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, 3f, layerMask))
+        {
+            ResourceBehavior resourceBehavior = hit.collider.gameObject.GetComponent<ResourceBehavior>();
+            if (resourceBehavior != null)
+            {
+                resourceBehavior.TakeDamage(30);
+            }
         }
     }
 
