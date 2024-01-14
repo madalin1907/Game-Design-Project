@@ -13,19 +13,71 @@ MonoBehaviour:
   m_Name: ItemsData
   m_EditorClassIdentifier: 
   items:
-  - _name: NONE
+  - _name: None
     _maxStack: 1
-    _type: 0
+    _type: 5
     _icon: {fileID: 0}
   - _name: Wood
     _maxStack: 64
-    _type: 0
-    _icon: {fileID: 21300000, guid: 9d1674a2d2b41aa4599c6a21fd035054, type: 3}
+    _type: 4
+    _icon: {fileID: 21300000, guid: 8fe85e77f92e61240b4c0c089881bb4d, type: 3}
+  - _name: Stone
+    _maxStack: 64
+    _type: 4
+    _icon: {fileID: 21300000, guid: fb96f80f825068f4691dddc0df901951, type: 3}
+  - _name: Iron
+    _maxStack: 64
+    _type: 4
+    _icon: {fileID: 21300000, guid: ad5b2113e7557a84583a59d42053bea5, type: 3}
+  - _name: Gold
+    _maxStack: 64
+    _type: 4
+    _icon: {fileID: 21300000, guid: 1f9841cb110f26849be9d87b263627de, type: 3}
+  - _name: Diamond
+    _maxStack: 64
+    _type: 4
+    _icon: {fileID: 21300000, guid: 126659827ce87e94f8753c5e58dc370c, type: 3}
   - _name: Diamond Sword
     _maxStack: 1
     _type: 1
-    _icon: {fileID: 21300000, guid: fe747bf36cd13ab49887ebd16f35ca76, type: 3}
-  - _name: Gold ingot
+    _icon: {fileID: 21300000, guid: 1a93f8cb7fccadf47a2b72fa6f108f97, type: 3}
+  - _name: Gold Sword
+    _maxStack: 1
+    _type: 1
+    _icon: {fileID: 21300000, guid: ae18cad3f6486934b9d7f80a23649494, type: 3}
+  - _name: Iron Sword
+    _maxStack: 1
+    _type: 1
+    _icon: {fileID: 21300000, guid: 61c9d10f0d8ad7747a79fa9901a288e5, type: 3}
+  - _name: Stone Sword
+    _maxStack: 1
+    _type: 1
+    _icon: {fileID: 21300000, guid: 5990f661285597443bb465fbe3aeba23, type: 3}
+  - _name: Diamond Pickaxe
+    _maxStack: 1
+    _type: 1
+    _icon: {fileID: 21300000, guid: f0e842b8917f9f341b2f61454867851e, type: 3}
+  - _name: Gold Pickaxe
+    _maxStack: 1
+    _type: 1
+    _icon: {fileID: 21300000, guid: d8d0191087bebaa439e33e67ffd6f759, type: 3}
+  - _name: Iron Pickaxe
+    _maxStack: 1
+    _type: 1
+    _icon: {fileID: 21300000, guid: e68e6b4b5c19b4447a46b94246e5d8a5, type: 3}
+  - _name: Stone Pickaxe
+    _maxStack: 1
+    _type: 1
+    _icon: {fileID: 21300000, guid: 1f4f2d0f657e960438515d5fedce492c, type: 3}
+  - _name: Chicken
     _maxStack: 64
-    _type: 4
-    _icon: {fileID: 21300000, guid: 1fa62db6df2c68f44819b797255e6d94, type: 3}
+    _type: 3
+    _icon: {fileID: 21300000, guid: c429a6f066b38af468608c215d545a0f, type: 3}
+  - _name: Pig
+    _maxStack: 64
+    _type: 3
+    _icon: {fileID: 21300000, guid: c6bcb6120f6597146a5e2726a823fabe, type: 3}
+  - _name: Cow
+    _maxStack: 64
+    _type: 3
+    _icon: {fileID: 21300000, guid: 218f97cf3b495254daba931a72a9f8c8, type: 3}

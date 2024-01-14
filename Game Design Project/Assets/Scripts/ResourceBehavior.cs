@@ -15,8 +15,7 @@ public class ResourceBehavior : MonoBehaviour
     [SerializeField] private GameObject itemDroppedPrefab;
     [SerializeField] LayerMask layermask;
 
-    private void DropItem()
-    {
+    private void DropItem() {
         GameObject temp_obj = Instantiate(itemDroppedPrefab, transform.position + new Vector3(0, 2, 0), Quaternion.identity);
         temp_obj.AddComponent<ItemBehaviour>();
         temp_obj.AddComponent<BoxCollider>();
@@ -41,5 +40,4 @@ public class ResourceBehavior : MonoBehaviour
             DropItem();
         }
     }
-
 }

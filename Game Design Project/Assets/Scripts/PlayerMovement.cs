@@ -80,6 +80,10 @@ public class PlayerMovement : MonoBehaviour
         var desiredVelocity = new Vector3(_input.x, 0.0f, _input.y) * _maxSpeed;
         desiredVelocity = cameraRotation * desiredVelocity;
         var maxSpeedChange = _maxAcceleration * Time.deltaTime;
+        if(_input.x == 0.0f && _input.y == 0.0f)
+        {
+            maxSpeedChange *= 3.0f;
+        }
 
         _velocity.x = Mathf.MoveTowards(_velocity.x, desiredVelocity.x, maxSpeedChange);
         _velocity.z = Mathf.MoveTowards(_velocity.z, desiredVelocity.z, maxSpeedChange);
