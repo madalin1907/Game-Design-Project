@@ -9,7 +9,6 @@ public class MainMenu : MonoBehaviour
 
     void Start()
     {
-        Debug.Log("Main menu loaded.");
         if (!PlayerPrefs.HasKey("volume"))
         {
             PlayerPrefs.SetFloat("volume", 0.5f);

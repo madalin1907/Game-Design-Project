@@ -7,13 +7,22 @@ public class PauseMenu : MonoBehaviour
     public static bool isGamePaused = false;
     public GameObject gameplayUI;
     public GameObject pauseMenuUI;
+    public GameObject optionsMenuUI;
 
     public void TogglePauseMenu(InputAction.CallbackContext context)
     {
         if (context.started)
         {
             if (isGamePaused)
+            {
+                if (optionsMenuUI.activeSelf)
+                {
+                    optionsMenuUI.SetActive(false);
+                    pauseMenuUI.SetActive(true);
+                    return;
+                }
                 Resume();
+            }
             else
                 Pause();
         }
@@ -21,9 +30,7 @@ public class PauseMenu : MonoBehaviour
 
     public void Resume()
     {
-        // deactivate cursor
         Cursor.lockState = CursorLockMode.Locked;
-        //Cursor.visible = false;
 
         gameplayUI.SetActive(true);
         pauseMenuUI.SetActive(false);
@@ -33,9 +40,7 @@ public class PauseMenu : MonoBehaviour
 
     public void Pause()
     {
-        // activate cursor
         Cursor.lockState = CursorLockMode.None;
-     //   Cursor.visible = true;
 
         gameplayUI.SetActive(false);
         pauseMenuUI.SetActive(true);
