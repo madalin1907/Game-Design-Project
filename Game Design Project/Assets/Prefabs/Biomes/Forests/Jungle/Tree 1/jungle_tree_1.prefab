@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3556945195443888822}
   - component: {fileID: 8094002127165912559}
+  - component: {fileID: -7951531015417794873}
   m_Layer: 0
   m_Name: jungle_tree_1
   m_TagString: Untagged
@@ -54,6 +55,21 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 3.8, y: 14, z: 3.5}
   m_Center: {x: 0, y: 7, z: 0}
+--- !u!114 &-7951531015417794873
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1329655162901428603}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1fa513a3a7978054fb450f5ce4eb69ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _itemName: Wood
+  _itemAmount: 2
+  itemDroppedPrefab: {fileID: 919132149155446097, guid: 167e56ea982c0454485b0d3db5a1855b, type: 3}
 --- !u!1001 &3238301721231192226
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -173,12 +173,14 @@ public class InventoryMechanism : MonoBehaviour {
 
     // ------------------ DEFAULT ------------------
 
-    private void DefaultInit() {
+    private void DefaultInit()
+    {
         GetGameobjectItemsFromHotbar();
         GetGameobjectItemsFromInventory();
         ChangeSelectedItemHotbarTo(0);
         ItemBehaviour.SetInventoryMechanism(this);
         CraftingIngredientsMechanism.SetCraftingMechanism(gameObject.GetComponent<CraftingMechanism>());
+        ResourceBehavior.SetItemData(itemData);
     }
 
     private void GetGameobjectItemsFromHotbar() {

@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1540223159599704658}
   - component: {fileID: 6210334349199682271}
+  - component: {fileID: 8327320483045631494}
   m_Layer: 0
   m_Name: tmp_fo_tree_7
   m_TagString: Untagged
@@ -54,6 +55,21 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.5, y: 8, z: 1.5}
   m_Center: {x: -0.1, y: 4, z: 0}
+--- !u!114 &8327320483045631494
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 167529632194148134}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1fa513a3a7978054fb450f5ce4eb69ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _itemName: Wood
+  _itemAmount: 2
+  itemDroppedPrefab: {fileID: 919132149155446097, guid: 167e56ea982c0454485b0d3db5a1855b, type: 3}
 --- !u!1001 &6006053119991156821
 PrefabInstance:
   m_ObjectHideFlags: 0

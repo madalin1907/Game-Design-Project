@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7590001856005050433}
   - component: {fileID: 1301856885924339233}
+  - component: {fileID: -8333497589970738792}
   m_Layer: 0
   m_Name: grassland_bush_4
   m_TagString: Untagged
@@ -54,6 +55,21 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 3.5, y: 3, z: 3.4}
   m_Center: {x: 0.2, y: 1.5, z: -0.15}
+--- !u!114 &-8333497589970738792
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8408430566234766018}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1fa513a3a7978054fb450f5ce4eb69ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _itemName: Wood
+  _itemAmount: 1
+  itemDroppedPrefab: {fileID: 919132149155446097, guid: 1f39d687923dc7944a3e81c0adaaa409, type: 3}
 --- !u!1001 &6568370316871399073
 PrefabInstance:
   m_ObjectHideFlags: 0

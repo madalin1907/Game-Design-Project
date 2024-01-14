@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 981919741851002466}
   - component: {fileID: 8082146201046572134}
+  - component: {fileID: 4814980729182389192}
   m_Layer: 0
   m_Name: savanna_tree_2
   m_TagString: Untagged
@@ -54,6 +55,21 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.4, y: 10, z: 1.3}
   m_Center: {x: 0, y: 5, z: 0}
+--- !u!114 &4814980729182389192
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5774906108938343324}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1fa513a3a7978054fb450f5ce4eb69ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _itemName: Wood
+  _itemAmount: 2
+  itemDroppedPrefab: {fileID: 919132149155446097, guid: 167e56ea982c0454485b0d3db5a1855b, type: 3}
 --- !u!1001 &3403112624821360615
 PrefabInstance:
   m_ObjectHideFlags: 0
