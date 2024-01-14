@@ -12,6 +12,7 @@ public class MapGenerator : MonoBehaviour {
     [SerializeField] private TopographyMode topographyMode;
     [SerializeField] private DrawNoiseMode drawNoiseMode;
     [SerializeField] private bool drawResources;
+    [SerializeField] private bool drawMobs;
 
     [SerializeField] private bool autoUpdate;
 

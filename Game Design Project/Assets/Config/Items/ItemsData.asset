@@ -25,3 +25,7 @@ MonoBehaviour:
     _maxStack: 1
     _type: 1
     _icon: {fileID: 21300000, guid: fe747bf36cd13ab49887ebd16f35ca76, type: 3}
+  - _name: Gold ingot
+    _maxStack: 64
+    _type: 4
+    _icon: {fileID: 21300000, guid: 1fa62db6df2c68f44819b797255e6d94, type: 3}

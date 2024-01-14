@@ -114,4 +114,11 @@ public class DayNightCycle : MonoBehaviour {
         return _smoothnessCurve.Evaluate(currentMomentInTransition);
     }
 
+    public int GetTime() {
+        return Mathf.RoundToInt(currentTime);
+    }
+
+    public int GetDayLength() {
+        return dayLength;
+    }
 }

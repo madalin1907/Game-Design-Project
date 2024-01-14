@@ -6,6 +6,9 @@ using UnityEngine.UIElements;
 
 public class EndlessTerrain : MonoBehaviour {
 
+    private float updateMobsEvery = 1.0f;
+    private float lastTimeMobsUpdated = -1.0f;
+
     [Header("Settings")]
     [SerializeField][Range(0, 10)] private int distanceViewChunks;
     [SerializeField] private int mapChunkSize;
@@ -15,7 +18,13 @@ public class EndlessTerrain : MonoBehaviour {
     private Vector2Int viewerChunkPosition;
     private Vector2Int oldViewerChunkPosition;
 
+    [Header("Mobs")]
+    [SerializeField] private int distanceMobsChunks;
+    [SerializeField] private List<GameObject> passiveMobs = new List<GameObject>();
+    [SerializeField] private List<GameObject> aggressiveMobs = new List<GameObject>();
+
     private static MapGenerator mapGenerator;
+    private static DayNightCycle dayNightCycle;
 
     private Queue< Vector2Int > queue = new Queue< Vector2Int >();
 
@@ -25,6 +34,7 @@ public class EndlessTerrain : MonoBehaviour {
     private List<TerrainChunk> visibleTerrainChunks = new List<TerrainChunk>();
 
     void Start() {
+        dayNightCycle = FindObjectOfType<DayNightCycle>();
         mapGenerator = FindObjectOfType<MapGenerator>();
         mapGenerator.Initialize();
         mapChunkSize = mapGenerator.GetMapChunkSize();
@@ -54,12 +64,17 @@ public class EndlessTerrain : MonoBehaviour {
         }
 
         oldViewerChunkPosition = viewerChunkPosition;
+
+        if (Time.time - lastTimeMobsUpdated > updateMobsEvery) {
+            lastTimeMobsUpdated = Time.time;
+            UpdateMobs();
+        }
     }
 
     void UpdateVisibleChunks() {
         TerrainChunk.SetViewerChunkPosition(viewerChunkPosition);   
 
-        bool isChunkFar;
+        bool isChunkFar, isChunkForForMobs;
         int numVisibleChunks = visibleTerrainChunks.Count;
         for (int i = numVisibleChunks - 1; i >= 0; i--) {
             isChunkFar = (visibleTerrainChunks[i].GetDistanceFromViewer() > distanceViewChunks);
@@ -107,6 +122,64 @@ public class EndlessTerrain : MonoBehaviour {
         }
         queue.Clear();
         terrainChunkWasSeenDictionary.Clear();
-
     }
+
+    private void UpdateMobs() {
+        int numVisibleChunks = visibleTerrainChunks.Count;
+        for (int i = numVisibleChunks - 1; i >= 0; i--) {
+            if (visibleTerrainChunks[i].GetTerrainChunk().gameObject.activeSelf == false)
+                continue;
+
+            bool isChunkForForMobs = (visibleTerrainChunks[i].GetDistanceFromViewer() > distanceMobsChunks);
+
+            if (!isChunkForForMobs) {
+                if (!visibleTerrainChunks[i].GetMobWasSpawned()) {
+                    GeneratePassiveMobs(visibleTerrainChunks[i]);
+                    visibleTerrainChunks[i].SetMobWasSpawned(true);
+                } else if (dayNightCycle.GetTime() >= dayNightCycle.GetDayLength() / 2) {
+                    GenerateAggresiveMobs(visibleTerrainChunks[i]);
+                }
+            }
+        }
+    }
+
+    private void GeneratePassiveMobs(TerrainChunk terrainChunk) {
+        if (passiveMobs.Count == 0)
+            return;
+
+        int numMobs = UnityEngine.Random.Range(1, 4);
+        MapData mapData = terrainChunk.GetMapData();
+
+        for (int i = 0; i < numMobs; i++) {
+            int mobIndex = UnityEngine.Random.Range(0, passiveMobs.Count);
+            int xPosition = UnityEngine.Random.Range(0, mapChunkSize - 1);
+            int yPosition = UnityEngine.Random.Range(0, mapChunkSize - 1);
+            float height = mapData.heightMap[xPosition, yPosition] * 64 + 3;
+
+            GameObject mob = Instantiate(passiveMobs[mobIndex]);
+            mob.transform.parent = terrainChunk.GetTerrainChunk().transform;
+            mob.transform.localPosition = new Vector3(2 * mapChunkSize - 2 * xPosition, height,2 * mapChunkSize - 2 * yPosition);
+        }
+    }
+
+    private void GenerateAggresiveMobs(TerrainChunk terrainChunk) {
+        if (aggressiveMobs.Count == 0)
+            return;
+
+        int numMobs = UnityEngine.Random.Range(-5, 2);
+        MapData mapData = terrainChunk.GetMapData();
+
+        for (int i = 0; i < numMobs; i++) {
+            int mobIndex = UnityEngine.Random.Range(0, aggressiveMobs.Count);
+            int xPosition = UnityEngine.Random.Range(0, mapChunkSize - 1);
+            int yPosition = UnityEngine.Random.Range(0, mapChunkSize - 1);
+            float height = mapData.heightMap[xPosition, yPosition] * 64 + 3;
+
+            GameObject mob = Instantiate(aggressiveMobs[mobIndex]);
+            mob.transform.parent = terrainChunk.GetTerrainChunk().transform;
+            mob.transform.localPosition = new Vector3(2 * mapChunkSize - 2 * xPosition, height,2 * mapChunkSize - 2 * yPosition);
+        }
+    }
+
+
 }

@@ -4,13 +4,14 @@ using UnityEngine;
 
 public class TerrainChunk {
 
-    private static Vector2Int viewerChunkPosition;
     private static int distanceViewChunks;
+    private static Vector2Int viewerChunkPosition;
+    private static MapGenerator mapGenerator;
 
+    private bool mobWasSpawned = false;
     private Vector2Int positionChunk;
     private Terrain terrain;
     private MapData mapData;
-    private static MapGenerator mapGenerator;
 
     // ----------------- Getters and setters -----------------
 
@@ -36,8 +37,20 @@ public class TerrainChunk {
         return terrain;
     }
 
+    public bool GetMobWasSpawned() {
+        return mobWasSpawned;
+    }
+
+    public ref MapData GetMapData() {
+        return ref mapData;
+    }
+
     public void SetVisibility(bool value) {
         terrain.gameObject.SetActive(value);
+    }
+
+    public void SetMobWasSpawned(bool value) {
+        mobWasSpawned = value;
     }
 
     // ----------------- Static methods -----------------

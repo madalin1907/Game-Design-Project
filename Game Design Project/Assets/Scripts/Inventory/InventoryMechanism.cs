@@ -30,12 +30,6 @@ public class InventoryMechanism : MonoBehaviour {
         currentSelectedItemHotbar = -1;
 
         DefaultInit();
-
-        hotbarItems[0].GetComponent<ItemBehaviour>().UpdateItem(1, 64);
-        hotbarItems[1].GetComponent<ItemBehaviour>().UpdateItem(1, 64);
-        for (int i = 2; i < hotbarItems.Count; i++) {
-            hotbarItems[i].GetComponent<ItemBehaviour>().UpdateItem(2, 1);
-        }
     }
 
     public void SwitchVisibilityInventory(InputAction.CallbackContext context) {
