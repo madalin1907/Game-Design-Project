@@ -43,6 +43,7 @@ public class MapGenerator : MonoBehaviour {
 
     [Header("Terrain")]
     [SerializeField] private GameObject terrainPrefab;
+    [SerializeField] private GameObject waterPrefab;
     [SerializeField] private Material terrainMaterial;
     [SerializeField] private Material terrainMaterialForTexture;
     [SerializeField] private List <TerrainLayersGroup> terrainLayersGroup = new List<TerrainLayersGroup>();
@@ -98,7 +99,7 @@ public class MapGenerator : MonoBehaviour {
             Vector2Int position = new Vector2Int(queue.Peek().Item2, queue.Peek().Item3);
 
             MapData mapData = GenerateMapData(new Vector2(position.x, position.y));
-            DrawTerrain(parentTerrain, mapData);
+            DrawTerrain(parentTerrain, mapData, position);
 
             queue.Dequeue();
 
@@ -115,10 +116,10 @@ public class MapGenerator : MonoBehaviour {
         }
     }
 
-    public void DrawTerrain(Terrain terrain, MapData mapData) {
+    public void DrawTerrain(Terrain terrain, MapData mapData, Vector2Int position) {
         switch (topographyMode) {
             case TopographyMode.RELIEF:
-                DrawMesh(terrain, mapData);
+                DrawMesh(terrain, mapData, position);
                 break;
             case TopographyMode.FLAT:
                 break;
@@ -237,11 +238,12 @@ public class MapGenerator : MonoBehaviour {
         terrain.terrainData.SetAlphamaps(0, 0, splatsMap);
     }
 
-    private void DrawMesh(Terrain terrain, MapData mapData) {
+    private void DrawMesh(Terrain terrain, MapData mapData, Vector2Int position) {
         terrain.terrainData.SetHeights(0, 0, mapData.heightMap);
 
         if (drawResources)
             DrawResourcesMesh(terrain, mapData);
+        DrawWater(terrain, mapData, position);
     }
 
     private void DrawResourcesMesh(Terrain terrain, MapData mapData) {
@@ -262,6 +264,32 @@ public class MapGenerator : MonoBehaviour {
                 mapData.resourcesMap[y, x] = -1;
             }
         }
+    }
+
+    private void DrawWater(Terrain terrain, MapData mapData, Vector2Int position) {
+        bool hasWater = false;
+        float heightWater = oceanNoiseLevel;
+
+        for (int y = 0; y < mapData.heightMap.GetLength(0); y++)
+        {
+            for (int x = 0; x < mapData.heightMap.GetLength(1); x++)
+            {
+                if (mapData.heightMap[y, x] <= heightWater + 0.01)
+                    hasWater = true;
+            }
+        }
+
+        if (!hasWater)
+            return;
+
+        GameObject waterGameObject = InstantiateWaterPrefab();
+        waterGameObject.transform.parent = terrain.transform;
+        waterGameObject.transform.localPosition = new Vector3(64, heightWater * 64, 64);
+
+        Material material = new Material(waterGameObject.GetComponent<Renderer>().sharedMaterial);
+        material.SetVector("_Offset_World", new Vector2(position.x, position.y));
+
+        waterGameObject.GetComponent<Renderer>().sharedMaterial = material;
     }
 
     // ----------------- MAP GENERATION -----------------
@@ -504,6 +532,14 @@ public class MapGenerator : MonoBehaviour {
 
     public int GetMapChunkSize() {
         return mapChunkSize;
+    }
+
+    public GameObject InstantiateWaterPrefab(){
+        return Instantiate(waterPrefab);
+    }
+
+    public float GetOceanNoiseLevel(){
+        return oceanNoiseLevel;
     }
 
     // ----------------- DEFAULT DATA -----------------
