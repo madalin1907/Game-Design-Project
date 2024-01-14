@@ -7,6 +7,9 @@ public class MainMenu : MonoBehaviour
     [SerializeField]
     private Slider volumeSlider;
 
+    [SerializeField]
+    private Toggle fullScreenToggle;
+
     void Start()
     {
         if (!PlayerPrefs.HasKey("volume"))
@@ -16,6 +19,38 @@ public class MainMenu : MonoBehaviour
         }
         else
             LoadVolume();
+
+        if (!PlayerPrefs.HasKey("isFullScreen"))
+        {
+            PlayerPrefs.SetInt("isFullScreen", 1);
+            LoadFullScreen();
+        }
+        else
+            LoadFullScreen();
+    }
+
+
+    //  Fullscreen functions
+    public void SetFullScreen(bool isFullScreen)
+    {
+        Screen.fullScreen = isFullScreen;
+        SaveFullScreen();
+    }
+    
+    private void LoadFullScreen()
+    {
+        if (PlayerPrefs.GetInt("isFullScreen") == 1)
+            fullScreenToggle.isOn = true;
+        else
+            fullScreenToggle.isOn = false;
+    }
+
+    private void SaveFullScreen()
+    {
+        if (fullScreenToggle.isOn)
+            PlayerPrefs.SetInt("isFullScreen", 1);
+        else
+            PlayerPrefs.SetInt("isFullScreen", 0);
     }
 
 
@@ -35,9 +70,10 @@ public class MainMenu : MonoBehaviour
 
     public void PlayGame()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1); // Loads the next scene in the build order
+        SceneManager.LoadScene(1);
     }
     
+
     public void QuitGame()
     {
         Debug.Log("Quit game.");
