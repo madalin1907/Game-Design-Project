@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -16,6 +17,9 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]
     private Rigidbody rb;
     private bool _isGrounded = true;
+
+    [SerializeField]
+    private GameObject pauseMenuGameObject;
 
     [SerializeField]
     private LayerMask layerMask;
@@ -81,6 +85,11 @@ public class PlayerMovement : MonoBehaviour
         if (statsMechanism.GetIsSprinting() && statsMechanism.GetEnergy() <= 0.05f) {
             _maxSpeed = _walkSpeed;
             SetIsSprinting(false);
+        }
+
+        if (statsMechanism.GetHealth() <= 0.3f) {
+            Cursor.lockState = CursorLockMode.None;
+            SceneManager.LoadScene(0);
         }
 
         var cameraRotation = Quaternion.Euler(0.0f, _cameraTransform.rotation.eulerAngles.y, 0.0f);

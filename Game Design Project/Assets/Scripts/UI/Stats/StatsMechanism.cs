@@ -187,4 +187,8 @@ public class StatsMechanism : MonoBehaviour {
         return energy;
     }
 
+    public float GetHealth() {
+        return health;
+    }
+
 }

@@ -7,7 +7,7 @@ using UnityEngine.UIElements;
 public class EndlessTerrain : MonoBehaviour {
 
     private float updateMobsEvery = 1.0f;
-    private float lastTimeMobsUpdated = -1.0f;
+    private float lastTimeMobsUpdated = 3.0f;
 
     [Header("Settings")]
     [SerializeField][Range(0, 10)] private int distanceViewChunks;
@@ -34,6 +34,8 @@ public class EndlessTerrain : MonoBehaviour {
     private List<TerrainChunk> visibleTerrainChunks = new List<TerrainChunk>();
 
     void Start() {
+        lastTimeMobsUpdated = 3.0f;
+
         dayNightCycle = FindObjectOfType<DayNightCycle>();
         mapGenerator = FindObjectOfType<MapGenerator>();
         mapGenerator.Initialize();
@@ -65,10 +67,13 @@ public class EndlessTerrain : MonoBehaviour {
 
         oldViewerChunkPosition = viewerChunkPosition;
 
-        if (Time.time - lastTimeMobsUpdated > updateMobsEvery) {
-            lastTimeMobsUpdated = Time.time;
+        if (lastTimeMobsUpdated <= 0) {
+            lastTimeMobsUpdated = updateMobsEvery;
             UpdateMobs();
         }
+
+        if (lastTimeMobsUpdated > 0)
+            lastTimeMobsUpdated -= Time.deltaTime;
     }
 
     void UpdateVisibleChunks() {
@@ -147,7 +152,7 @@ public class EndlessTerrain : MonoBehaviour {
         if (passiveMobs.Count == 0)
             return;
 
-        int numMobs = UnityEngine.Random.Range(1, 4);
+        int numMobs = UnityEngine.Random.Range(2, 5);
         MapData mapData = terrainChunk.GetMapData();
 
         for (int i = 0; i < numMobs; i++) {
@@ -166,7 +171,7 @@ public class EndlessTerrain : MonoBehaviour {
         if (aggressiveMobs.Count == 0)
             return;
 
-        int numMobs = UnityEngine.Random.Range(-5, 2);
+        int numMobs = UnityEngine.Random.Range(-5, 15);
         MapData mapData = terrainChunk.GetMapData();
 
         for (int i = 0; i < numMobs; i++) {
