@@ -6,7 +6,9 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]
     private Transform _cameraTransform;
 
-    private float _maxSpeed = 10.0f;
+    private float _maxSpeed = 9.0f;
+    private float _walkSpeed = 9.0f;
+    private float _sprintSpeed = 16.0f;
     private float _maxAcceleration = 7.0f;
     private Vector2 _input;
     private Vector3 _velocity;
@@ -17,6 +19,8 @@ public class PlayerMovement : MonoBehaviour
 
     [SerializeField]
     private LayerMask layerMask;
+
+    StatsMechanism statsMechanism;
 
     void OnCollisionEnter(Collision collision)
     {
@@ -33,17 +37,15 @@ public class PlayerMovement : MonoBehaviour
     {
         if (context.started && _isGrounded)
         {
-            Debug.Log("Jump started");
             rb.AddForce(Vector3.up * 500, ForceMode.Impulse);
             _isGrounded = false;
-            Debug.Log("Jump ended");
         }
     }
 
     public void Attack(InputAction.CallbackContext context)
     {
         RaycastHit hit;
-        if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, 3f, layerMask))
+        if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, 5f, layerMask))
         {
             ResourceBehavior resourceBehavior = hit.collider.gameObject.GetComponent<ResourceBehavior>();
             if (resourceBehavior != null)
@@ -59,12 +61,10 @@ public class PlayerMovement : MonoBehaviour
     public void Sprint(InputAction.CallbackContext context)
     {
         if (context.started) {
-            Debug.Log("Sprint started");
-            _maxSpeed *= 2.0f;
+            _maxSpeed = _sprintSpeed;
             SetIsSprinting(true);
         } else if (context.canceled) {
-            Debug.Log("Sprint canceled");
-            _maxSpeed /= 2.0f;
+            _maxSpeed = _walkSpeed;
             SetIsSprinting(false);
         }
     }
@@ -72,10 +72,17 @@ public class PlayerMovement : MonoBehaviour
     void Start() 
     {
         Cursor.lockState = CursorLockMode.Locked;
+        statsMechanism = GetComponent<StatsMechanism>();
+        Debug.Assert(statsMechanism != null, "Stats mechanism is missing!");
     }
 
     void Update()
     {
+        if (statsMechanism.GetIsSprinting() && statsMechanism.GetEnergy() <= 0.05f) {
+            _maxSpeed = _walkSpeed;
+            SetIsSprinting(false);
+        }
+
         var cameraRotation = Quaternion.Euler(0.0f, _cameraTransform.rotation.eulerAngles.y, 0.0f);
         var desiredVelocity = new Vector3(_input.x, 0.0f, _input.y) * _maxSpeed;
         desiredVelocity = cameraRotation * desiredVelocity;

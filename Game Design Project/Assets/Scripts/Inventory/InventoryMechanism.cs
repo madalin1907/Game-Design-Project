@@ -10,11 +10,13 @@ public class InventoryMechanism : MonoBehaviour {
     private const string pathToSlotIcon = "Background/Item Icon";
     private const float cooldDownSwitchInventory = 0.2f;
     private const float cooldDownDropItem = 0.2f;
+    private const float cooldDownEatItem = 0.2f;
 
     private bool isInventoryOpen = false;
     private int currentSelectedItemHotbar = 0;
     private float lastTimeInventorySwitched = -1f;
     private float lastTimeItemDropped = -1f;
+    private float lastTimeItemEaten = -1f;
 
     private List<GameObject> inventoryItems = new List<GameObject>();
     private List<GameObject> hotbarItems = new List<GameObject>();
@@ -69,6 +71,22 @@ public class InventoryMechanism : MonoBehaviour {
         lastTimeItemDropped = Time.time;
 
         ItemBehaviour.DropItem();
+    }
+
+    public void EatItem(InputAction.CallbackContext context) {
+        if (Time.time - lastTimeItemEaten < cooldDownEatItem)
+            return;
+        lastTimeItemEaten = Time.time;
+
+        ItemBehaviour itemBehaviour = hotbarItems[currentSelectedItemHotbar].GetComponent<ItemBehaviour>();
+        if (itemBehaviour.GetItem().id == 0)
+            return;
+
+        if (itemData.items[itemBehaviour.GetItem().id]._type == ItemType.CONSUMABLE) {
+            itemBehaviour.IncrementCount(-1);
+            StatsMechanism statsMechanism = GetComponent<StatsMechanism>();
+            statsMechanism.IncrementHunger(30f);
+        }
     }
 
     public void AddItemInInventory(GameObject item) {

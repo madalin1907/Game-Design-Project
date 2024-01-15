@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6988343777355819522}
   - component: {fileID: -6441758167132996464}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: grassland_bush_5
   m_TagString: Untagged
   m_Icon: {fileID: 0}

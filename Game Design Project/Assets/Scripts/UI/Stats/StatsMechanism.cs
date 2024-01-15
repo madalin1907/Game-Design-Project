@@ -47,7 +47,7 @@ public class StatsMechanism : MonoBehaviour {
         UpdateMaxValuesSliders();
     }
 
-    private void Update() {
+    private void FixedUpdate() {
         if (isSprinting)
             Sprint();
         else if (energy != maxEnergy)
@@ -57,6 +57,15 @@ public class StatsMechanism : MonoBehaviour {
             SwimUnderWater();
         else if (oxygen != maxOxygen)
             RegenerateOxygen();
+
+        if (hunger <= 0f) {
+            TakeDamage(0.04f);
+        }
+
+        if (hunger >= 80f && health < maxHealth) {
+            Heal(0.02f);
+            IncrementHunger(-0.02f);
+        }
 
         Lives();
 
@@ -120,6 +129,10 @@ public class StatsMechanism : MonoBehaviour {
 
         if (healthSlider != null)
             healthSlider.SetValue(health / maxHealth);
+
+        if (health <= 0) {
+            // pass
+        }
     }
 
     public void Heal(float heal) {
@@ -158,12 +171,20 @@ public class StatsMechanism : MonoBehaviour {
             oxygenSlider.SetValue(oxygen / maxOxygen);
     }
 
+    public bool GetIsSprinting() {
+        return isSprinting;
+    }
+
     public void SetIsSprinting(bool value) {
         isSprinting = value;
     }
 
     public void SetIsUnderWater(bool value) {
         isUnderWater = value;
+    }
+
+    public float GetEnergy() {
+        return energy;
     }
 
 }

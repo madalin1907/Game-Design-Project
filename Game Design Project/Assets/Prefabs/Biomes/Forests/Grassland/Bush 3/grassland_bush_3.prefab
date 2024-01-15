@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 64537261098036845}
   - component: {fileID: 3230625104477252647}
   - component: {fileID: -6760387922568233024}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: grassland_bush_3
   m_TagString: Untagged
   m_Icon: {fileID: 0}

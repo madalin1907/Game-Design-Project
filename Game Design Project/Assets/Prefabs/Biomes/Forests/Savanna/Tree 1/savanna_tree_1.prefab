@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 9010782708883367479}
   - component: {fileID: 1421136473428511649}
   - component: {fileID: 1928139963730647745}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: savanna_tree_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}

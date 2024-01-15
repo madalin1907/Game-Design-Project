@@ -5,7 +5,7 @@ using UnityEngine.AI;
 
 public class AIMovementScript : MonoBehaviour
 {
-    public float hp = 3f;
+    private float hp = 3000f;
 
     private bool isDead = false;
     private float deathAnimationSpeed = 5f;

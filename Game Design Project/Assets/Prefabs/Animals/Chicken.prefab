@@ -805,9 +805,9 @@ GameObject:
   - component: {fileID: 8438762838570011837}
   - component: {fileID: 8438762838570011836}
   - component: {fileID: 8438762838570011839}
-  - component: {fileID: 8438762838570011838}
-  - component: {fileID: -1139451542803306257}
-  m_Layer: 0
+  - component: {fileID: 1405996037725289239}
+  - component: {fileID: -3334810901274405757}
+  m_Layer: 6
   m_Name: Chicken
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -901,7 +901,7 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &8438762838570011838
+--- !u!114 &1405996037725289239
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -910,34 +910,27 @@ MonoBehaviour:
   m_GameObject: {fileID: 8256852294928334383}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 69821102893eab74e88c0f8137b6b1ba, type: 3}
+  m_Script: {fileID: 11500000, guid: 1fa513a3a7978054fb450f5ce4eb69ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hp: 5
-  ItemsDeadState:
-  - {fileID: 9103836137971069512}
-  moveSpeed: 1
-  rotSpeed: 5
---- !u!114 &-1139451542803306257
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8256852294928334383}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8996418d45fda594aa7589dd6f42f64a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  camera: {fileID: 0}
-  rayLength: 0
   _itemName: Chicken
   _itemAmount: 1
   itemDroppedPrefab: {fileID: 919132149155446097, guid: c77d3f9ceacd09c4ab1329a3902b354b, type: 3}
-  layermask:
-    serializedVersion: 2
-    m_Bits: 0
+--- !u!114 &-3334810901274405757
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8256852294928334383}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec15f0563b94d92479bc72bb68e85e2a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ItemsDeadState: []
+  moveSpeed: 1
+  rotSpeed: 5
 --- !u!1 &8256852294937943757
 GameObject:
   m_ObjectHideFlags: 0

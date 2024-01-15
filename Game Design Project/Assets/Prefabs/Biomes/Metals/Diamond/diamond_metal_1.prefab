@@ -94,7 +94,7 @@ GameObject:
   - component: {fileID: 3582754792459242302}
   - component: {fileID: 3392431667193217510}
   - component: {fileID: -6131991872737773229}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: diamond_metal_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}

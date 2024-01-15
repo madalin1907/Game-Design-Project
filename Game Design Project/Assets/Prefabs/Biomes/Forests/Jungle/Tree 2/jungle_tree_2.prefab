@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1858590100034351355}
   - component: {fileID: 4407048434849938561}
   - component: {fileID: -3515682843705304280}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: jungle_tree_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
