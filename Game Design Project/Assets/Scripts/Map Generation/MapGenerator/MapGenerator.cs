@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using Unity.Collections;
 using UnityEngine;
+using static PlayerMovement;
 
 public enum TopographyMode { FLAT, RELIEF }
 public enum DrawNoiseMode { HEIGHT, LEVEL, HEAT, MOISTURE, BIOME, RESOURCES };
@@ -71,6 +73,10 @@ public class MapGenerator : MonoBehaviour {
         DefaultData();
     }
 
+    private void Awake() {
+        LoadPersistance();
+    }
+
     void Update() {
         while (queueChunksThread.Count > 0) {
             TerrainDataThread terrainDataThread;
@@ -78,6 +84,18 @@ public class MapGenerator : MonoBehaviour {
                 terrainDataThread = queueChunksThread.Dequeue();
             }
             terrainDataThread.callback(terrainDataThread.mapData);
+        }
+    }
+
+    private void LoadPersistance() {
+        string path = Application.persistentDataPath + "/PlayerPosition.json";
+        if (File.Exists(path)) {
+            string json = File.ReadAllText(path);
+            PlayerPosition playerPosition = JsonUtility.FromJson<PlayerPosition>(json);
+
+            seed = playerPosition.seed;
+        } else {
+            seed = UnityEngine.Random.Range(0, 100000);
         }
     }
 
@@ -478,6 +496,10 @@ public class MapGenerator : MonoBehaviour {
                 parentTerrain.SetNeighbors(terrain, null, null, null);
             }
         }
+    }
+
+    public int GetSeed() {
+        return seed;
     }
 
     // ----------------- Resources -----------------

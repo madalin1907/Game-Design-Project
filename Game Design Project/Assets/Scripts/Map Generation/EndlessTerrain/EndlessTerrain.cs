@@ -171,7 +171,7 @@ public class EndlessTerrain : MonoBehaviour {
         if (aggressiveMobs.Count == 0)
             return;
 
-        int numMobs = UnityEngine.Random.Range(-5, 15);
+        int numMobs = UnityEngine.Random.Range(-5, 2);
         MapData mapData = terrainChunk.GetMapData();
 
         for (int i = 0; i < numMobs; i++) {

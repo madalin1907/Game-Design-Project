@@ -149,6 +149,8 @@ public class ItemBehaviour :
                     tempItemSlot = hoveredItemBehaviour.GetItem();
                     hoveredItemBehaviour.UpdateItem(item.id, item.count);
                     UpdateItem(tempItemSlot.id, tempItemSlot.count);
+
+                    MarkCraftingResultAsPicked();
                 }
             } else if (hoveredItemBehaviour.gameObject != gameObject) {
                 remain = hoveredItemBehaviour.IncrementCount(item.count);
@@ -272,8 +274,9 @@ public class ItemBehaviour :
             originalItem.IncrementCount(-1);
             itemDragged.IncrementCount(-1);
 
-            if (itemDragged.GetItem().count == 0)
+            if (itemDragged.GetItem().count == 0) {
                 Destroy(itemBeingDragged);
+            }
         }
     }
 

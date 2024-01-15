@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6236587013144571335}
-  - component: {fileID: 4565108783001333029}
+  - component: {fileID: 4349364808794656027}
   - component: {fileID: -7979100473841765123}
   m_Layer: 6
   m_Name: tundra_tree_4
@@ -34,7 +34,7 @@ Transform:
   - {fileID: 5273479722523801940}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &4565108783001333029
+--- !u!65 &4349364808794656027
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -53,8 +53,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 1.5, y: 10, z: 1.5}
+  m_Center: {x: 0, y: 5, z: 0}
 --- !u!114 &-7979100473841765123
 MonoBehaviour:
   m_ObjectHideFlags: 0

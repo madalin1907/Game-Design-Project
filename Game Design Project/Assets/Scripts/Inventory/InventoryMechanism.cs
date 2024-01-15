@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using static UnityEditor.Progress;
 
 public class InventoryMechanism : MonoBehaviour {
 
@@ -32,6 +31,12 @@ public class InventoryMechanism : MonoBehaviour {
         currentSelectedItemHotbar = -1;
 
         DefaultInit();
+
+        inventoryItems[0].GetComponent<ItemBehaviour>().UpdateItem(itemData.GetIdFromName("Stone"), 4);
+        inventoryItems[1].GetComponent<ItemBehaviour>().UpdateItem(itemData.GetIdFromName("Wood"), 30);
+        inventoryItems[2].GetComponent<ItemBehaviour>().UpdateItem(itemData.GetIdFromName("Iron"), 4);
+        inventoryItems[3].GetComponent<ItemBehaviour>().UpdateItem(itemData.GetIdFromName("Gold"), 4);
+        inventoryItems[4].GetComponent<ItemBehaviour>().UpdateItem(itemData.GetIdFromName("Diamond"), 4);
     }
 
     public void SwitchVisibilityInventory(InputAction.CallbackContext context) {

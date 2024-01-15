@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using UnityEditor;
 
 [CustomEditor(typeof(SliderBehaviour))]
@@ -13,3 +14,4 @@ public class SliderBehaviourEditor : Editor {
         }
     }
 }
+#endif

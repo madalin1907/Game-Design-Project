@@ -1,3 +1,4 @@
+using System.IO;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -73,6 +74,10 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    private void Awake() {
+        LoadPersistance();
+    }
+
     void Start() 
     {
         Cursor.lockState = CursorLockMode.Locked;
@@ -80,14 +85,32 @@ public class PlayerMovement : MonoBehaviour
         Debug.Assert(statsMechanism != null, "Stats mechanism is missing!");
     }
 
+    private void LoadPersistance() {
+        string path = Application.persistentDataPath + "/PlayerPosition.json";
+        if (File.Exists(path)) {
+            string json = File.ReadAllText(path);
+            PlayerPosition playerPosition = JsonUtility.FromJson<PlayerPosition>(json);
+
+            transform.position = playerPosition.position;
+            transform.rotation = playerPosition.rotation;
+        }
+    }
+
     void Update()
     {
+        SavePositionRotation();
+
         if (statsMechanism.GetIsSprinting() && statsMechanism.GetEnergy() <= 0.05f) {
             _maxSpeed = _walkSpeed;
             SetIsSprinting(false);
         }
 
         if (statsMechanism.GetHealth() <= 0.3f) {
+            string path = Application.persistentDataPath + "/PlayerPosition.json";
+            if (File.Exists(path)) {
+                File.Delete(path);
+            }
+
             Cursor.lockState = CursorLockMode.None;
             SceneManager.LoadScene(0);
         }
@@ -114,5 +137,23 @@ public class PlayerMovement : MonoBehaviour
         Debug.Assert(statsMechanism != null, "Stats mechanism is missing!");
 
         statsMechanism.SetIsSprinting(value);
+    }
+
+    private void SavePositionRotation() {
+        string pathPlayer = Application.persistentDataPath + "/PlayerPosition.json";
+
+        PlayerPosition playerPosition = new PlayerPosition();
+        playerPosition.position = transform.position + new Vector3(0, 1, 0);
+        playerPosition.rotation = transform.rotation;
+        playerPosition.seed = FindObjectOfType<MapGenerator>().GetSeed();
+
+        string json = JsonUtility.ToJson(playerPosition);
+        File.WriteAllText(pathPlayer, json);
+    }
+
+    public class PlayerPosition {
+        public int seed;
+        public Vector3 position;
+        public Quaternion rotation;
     }
 }

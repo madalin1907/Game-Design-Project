@@ -16,88 +16,346 @@ MonoBehaviour:
   itemData: {fileID: 11400000, guid: 02b3bacb9eb6af04e95d093e61658d67, type: 2}
   recipes:
   - result:
-      _name: Wood
-      _id: 1
+      _name: Stone Pickaxe
+      _id: 13
       _count: 1
     row0:
       ingredient0:
+        _name: Stone
+        _id: 2
+        _count: 1
+      ingredient1:
+        _name: Stone
+        _id: 2
+        _count: 1
+      ingredient2:
+        _name: Stone
+        _id: 2
+        _count: 1
+    row1:
+      ingredient0:
+        _name: None
+        _id: 0
+        _count: 0
+      ingredient1:
         _name: Wood
         _id: 1
         _count: 1
-      ingredient1:
-        _name: Wood
-        _id: 1
-        _count: 2
       ingredient2:
-        _name: Wood
-        _id: 1
-        _count: 2
-    row1:
-      ingredient0:
-        _name: 
-        _id: 0
-        _count: 0
-      ingredient1:
-        _name: 
-        _id: 0
-        _count: 0
-      ingredient2:
-        _name: 
+        _name: None
         _id: 0
         _count: 0
     row2:
       ingredient0:
-        _name: 
+        _name: None
         _id: 0
         _count: 0
       ingredient1:
-        _name: 
+        _name: Wood
+        _id: 1
+        _count: 1
+      ingredient2:
+        _name: None
         _id: 0
         _count: 0
+  - result:
+      _name: Iron Pickaxe
+      _id: 12
+      _count: 1
+    row0:
+      ingredient0:
+        _name: Iron
+        _id: 3
+        _count: 1
+      ingredient1:
+        _name: Iron
+        _id: 3
+        _count: 1
       ingredient2:
-        _name: 
+        _name: Iron
+        _id: 3
+        _count: 1
+    row1:
+      ingredient0:
+        _name: None
+        _id: 0
+        _count: 0
+      ingredient1:
+        _name: Wood
+        _id: 1
+        _count: 1
+      ingredient2:
+        _name: None
+        _id: 0
+        _count: 0
+    row2:
+      ingredient0:
+        _name: None
+        _id: 0
+        _count: 0
+      ingredient1:
+        _name: Wood
+        _id: 1
+        _count: 1
+      ingredient2:
+        _name: None
+        _id: 0
+        _count: 0
+  - result:
+      _name: Gold Pickaxe
+      _id: 11
+      _count: 1
+    row0:
+      ingredient0:
+        _name: Gold
+        _id: 4
+        _count: 1
+      ingredient1:
+        _name: Gold
+        _id: 4
+        _count: 1
+      ingredient2:
+        _name: Gold
+        _id: 4
+        _count: 1
+    row1:
+      ingredient0:
+        _name: None
+        _id: 0
+        _count: 0
+      ingredient1:
+        _name: Wood
+        _id: 1
+        _count: 1
+      ingredient2:
+        _name: None
+        _id: 0
+        _count: 0
+    row2:
+      ingredient0:
+        _name: None
+        _id: 0
+        _count: 0
+      ingredient1:
+        _name: Wood
+        _id: 1
+        _count: 1
+      ingredient2:
+        _name: None
+        _id: 0
+        _count: 0
+  - result:
+      _name: Diamond Pickaxe
+      _id: 10
+      _count: 1
+    row0:
+      ingredient0:
+        _name: Diamond
+        _id: 5
+        _count: 1
+      ingredient1:
+        _name: Diamond
+        _id: 5
+        _count: 1
+      ingredient2:
+        _name: Diamond
+        _id: 5
+        _count: 1
+    row1:
+      ingredient0:
+        _name: None
+        _id: 0
+        _count: 0
+      ingredient1:
+        _name: Wood
+        _id: 1
+        _count: 1
+      ingredient2:
+        _name: None
+        _id: 0
+        _count: 0
+    row2:
+      ingredient0:
+        _name: None
+        _id: 0
+        _count: 0
+      ingredient1:
+        _name: Wood
+        _id: 1
+        _count: 1
+      ingredient2:
+        _name: None
+        _id: 0
+        _count: 0
+  - result:
+      _name: Stone Sword
+      _id: 9
+      _count: 1
+    row0:
+      ingredient0:
+        _name: None
+        _id: 0
+        _count: 0
+      ingredient1:
+        _name: Stone
+        _id: 2
+        _count: 1
+      ingredient2:
+        _name: None
+        _id: 0
+        _count: 0
+    row1:
+      ingredient0:
+        _name: None
+        _id: 0
+        _count: 0
+      ingredient1:
+        _name: Stone
+        _id: 2
+        _count: 1
+      ingredient2:
+        _name: None
+        _id: 0
+        _count: 0
+    row2:
+      ingredient0:
+        _name: None
+        _id: 0
+        _count: 0
+      ingredient1:
+        _name: Wood
+        _id: 1
+        _count: 1
+      ingredient2:
+        _name: None
+        _id: 0
+        _count: 0
+  - result:
+      _name: Iron Sword
+      _id: 8
+      _count: 1
+    row0:
+      ingredient0:
+        _name: None
+        _id: 0
+        _count: 0
+      ingredient1:
+        _name: Iron
+        _id: 3
+        _count: 1
+      ingredient2:
+        _name: None
+        _id: 0
+        _count: 0
+    row1:
+      ingredient0:
+        _name: None
+        _id: 0
+        _count: 0
+      ingredient1:
+        _name: Iron
+        _id: 3
+        _count: 1
+      ingredient2:
+        _name: None
+        _id: 0
+        _count: 0
+    row2:
+      ingredient0:
+        _name: None
+        _id: 0
+        _count: 0
+      ingredient1:
+        _name: Wood
+        _id: 1
+        _count: 1
+      ingredient2:
+        _name: None
+        _id: 0
+        _count: 0
+  - result:
+      _name: Gold Sword
+      _id: 7
+      _count: 1
+    row0:
+      ingredient0:
+        _name: None
+        _id: 0
+        _count: 0
+      ingredient1:
+        _name: Gold
+        _id: 4
+        _count: 1
+      ingredient2:
+        _name: None
+        _id: 0
+        _count: 0
+    row1:
+      ingredient0:
+        _name: None
+        _id: 0
+        _count: 0
+      ingredient1:
+        _name: Gold
+        _id: 4
+        _count: 1
+      ingredient2:
+        _name: None
+        _id: 0
+        _count: 0
+    row2:
+      ingredient0:
+        _name: None
+        _id: 0
+        _count: 0
+      ingredient1:
+        _name: Wood
+        _id: 1
+        _count: 1
+      ingredient2:
+        _name: None
         _id: 0
         _count: 0
   - result:
       _name: Diamond Sword
-      _id: 2
+      _id: 6
       _count: 1
     row0:
       ingredient0:
-        _name: Wood
-        _id: 1
-        _count: 1
+        _name: None
+        _id: 0
+        _count: 0
       ingredient1:
-        _name: Wood
-        _id: 1
-        _count: 2
-      ingredient2:
-        _name: Wood
-        _id: 1
+        _name: Diamond
+        _id: 5
         _count: 1
+      ingredient2:
+        _name: None
+        _id: 0
+        _count: 0
     row1:
       ingredient0:
-        _name: 
+        _name: None
         _id: 0
         _count: 0
       ingredient1:
-        _name: 
-        _id: 0
-        _count: 0
+        _name: Diamond
+        _id: 5
+        _count: 1
       ingredient2:
-        _name: 
+        _name: None
         _id: 0
         _count: 0
     row2:
       ingredient0:
-        _name: 
+        _name: None
         _id: 0
         _count: 0
       ingredient1:
-        _name: 
-        _id: 0
-        _count: 0
+        _name: Wood
+        _id: 1
+        _count: 1
       ingredient2:
-        _name: 
+        _name: None
         _id: 0
         _count: 0
